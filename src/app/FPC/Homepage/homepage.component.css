@@ -112,7 +112,6 @@
 /* Carousel specific classes for consistency */
 #homepageCarousel {
   box-shadow: var(--shadow-md); /* Apply a shadow to the carousel */
-  aspect-ratio: 16/9; /* Maintain consistent aspect ratio */
 }
 
 #homepageCarousel .carousel-inner {
@@ -159,15 +158,12 @@
   #pre-login-content .col-md-4:last-child {
     margin-bottom: 0; /* Remove extra margin for the last stacked column */
   }
-  #homepageCarousel {
-    aspect-ratio: 16/8; /* Slightly shorter on mobile */
-  }
-  
+
   #pre-login-content .col-md-4 {
     justify-content: center;
     margin-top: 1rem;
   }
-  
+
   .login-card {
     max-width: 400px;
     margin: 0 auto;
