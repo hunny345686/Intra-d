@@ -16,14 +16,16 @@
     <!-- Vertical Tabs Section -->
     <div class="row mt-4 mb-5">
         <div class="col-md-3">
-            <div class="nav flex-column nav-pills vertical card-modern p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <button class="nav-link active rounded-modern mb-2 fw-medium" id="v-pills-lease-tab" data-bs-toggle="pill"
-                    data-bs-target="#v-pills-lease" type="button" role="tab" aria-controls="v-pills-lease"
-                    aria-selected="true">
+            <div class="nav flex-column nav-pills vertical card-modern p-3" id="v-pills-tab" role="tablist"
+                aria-orientation="vertical">
+                <button class="nav-link active rounded-modern mb-2 fw-medium" id="v-pills-lease-tab"
+                    data-bs-toggle="pill" data-bs-target="#v-pills-lease" type="button" role="tab"
+                    aria-controls="v-pills-lease" aria-selected="true">
                     <i class="fas fa-handshake me-2"></i>Land Lease
                 </button>
-                <button class="nav-link rounded-modern mb-2 fw-medium" id="v-pills-rent-tab" data-bs-toggle="pill" data-bs-target="#v-pills-rent"
-                    type="button" role="tab" aria-controls="v-pills-rent" aria-selected="false">
+                <button class="nav-link rounded-modern mb-2 fw-medium" id="v-pills-rent-tab" data-bs-toggle="pill"
+                    data-bs-target="#v-pills-rent" type="button" role="tab" aria-controls="v-pills-rent"
+                    aria-selected="false">
                     <i class="fas fa-tractor me-2"></i>Equipment Rent
                 </button>
                 <button class="nav-link rounded-modern fw-medium" id="v-pills-conforming-tab" data-bs-toggle="pill"
@@ -31,13 +33,18 @@
                     aria-selected="false">
                     <i class="fas fa-users me-2"></i>Co-farming Plans
                 </button>
+
+                <button class="nav-link rounded-modern fw-medium" id="Workes-tab" data-bs-toggle="pill"
+                    data-bs-target="#Workes" type="button" role="tab" aria-controls="Workes" aria-selected="false">
+                    <i class="fas fa-helmet-safety me-2"></i>Workers
+                </button>
             </div>
         </div>
         <div class="col-md-9">
             <div class="tab-content" id="v-pills-tabContent">
                 <!-- Lease Tab Content -->
-                <div class="tab-pane fade show active card-modern p-4" id="v-pills-lease"
-                    role="tabpanel" aria-labelledby="v-pills-lease-tab">
+                <div class="tab-pane fade show active card-modern p-4" id="v-pills-lease" role="tabpanel"
+                    aria-labelledby="v-pills-lease-tab">
                     <h3 class="text-secondary-blue mb-4">Lease Application Form</h3>
                     <form (ngSubmit)="handleLeaseSubmission()" #leaseForm="ngForm" novalidate>
                         <div class="row g-3">
@@ -172,7 +179,8 @@
                         <!-- Package 1: Basic Plan -->
                         <div class="col">
                             <div class="card-modern h-100">
-                                <div class="card-header bg-primary-green text-white text-center fs-5 rounded-top">Basic Plan</div>
+                                <div class="card-header bg-primary-green text-white text-center fs-5 rounded-top">Basic
+                                    Plan</div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Soil
@@ -197,7 +205,8 @@
                         <!-- Package 2: Premium Plan -->
                         <div class="col">
                             <div class="card-modern h-100 border-primary border-3">
-                                <div class="card-header bg-secondary-blue text-white text-center fs-5 rounded-top">Premium Plan</div>
+                                <div class="card-header bg-secondary-blue text-white text-center fs-5 rounded-top">
+                                    Premium Plan</div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item"><i class="fas fa-check text-success me-2"></i>Soil
@@ -217,7 +226,8 @@
                         <!-- Package 3: Enterprise Plan -->
                         <div class="col">
                             <div class="card-modern h-100">
-                                <div class="card-header bg-warning text-dark text-center fs-5 rounded-top">Marketing Plan</div>
+                                <div class="card-header bg-warning text-dark text-center fs-5 rounded-top">Marketing
+                                    Plan</div>
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <h5 class="card-title text-center my-2">Contact Us</h5>
@@ -235,6 +245,42 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Workes -->
+                <div class="tab-pane fade card-modern p-4" id="Workes" role="tabpanel" aria-labelledby="Workes-tab">
+                    <h3 class="text-secondary-blue mb-4">Workes Required Form</h3>
+                    <form (ngSubmit)="handleRentSubmission()" #rentForm="ngForm" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="rentEquipmentType" class="form-label fw-semibold">Equipment Type</label>
+                                <select class="form-select rounded-md-custom" id="rentEquipmentType"
+                                    [(ngModel)]="rentData.equipmentType" name="rentEquipmentType" required>
+                                    <option selected disabled value="">Select Work Type</option>
+                                    <option value="planting">Planting</option>
+                                    <option value="pesticides-spraying">Pesticides Spraying</option>
+                                    <option value="harvesting">Harvesting</option>
+                                    <option value="others">Others</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantityNumber" class="form-label">Enter Quantity</label>
+                                <input type="number" class="form-control" id="quantityNumber" min="1" max="15"
+                                    placeholder="Range: 1 to 15" required>
+                                <div class="form-text">Please enter a value between 1 and 15.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantityNumber" class="form-label">Mobile Number</label>
+                                <input type="text" class="form-control" id="mobile-number"
+                                    placeholder="+91-0000-0000-00" required>
+
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary-green rounded-md-custom mt-3"
+                                    [disabled]="!rentForm.valid">Submit Rent Inquiry</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
