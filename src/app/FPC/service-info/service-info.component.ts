@@ -1,5 +1,11 @@
 import { isPlatformBrowser, CommonModule, DOCUMENT } from '@angular/common';
-import { Component, Inject, PLATFORM_ID, ViewChild, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  PLATFORM_ID,
+  ViewChild,
+  OnInit,
+} from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
@@ -40,6 +46,9 @@ export class ServiceInfoComponent implements OnInit {
     totalYears: null,
     roadDistance: null,
   };
+  isBasicExpanded = false;
+  isPremiumExpanded = false;
+  isMarketingExpanded = false;
 
   // Rent form data
   rentData: RentData = {
@@ -57,10 +66,10 @@ export class ServiceInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
     });
-    
+
     if (isPlatformBrowser(this.platformId)) {
       // Re-initialize Bootstrap's tab functionality if needed
       const firstTabEl = this.document.querySelector(
@@ -103,11 +112,11 @@ export class ServiceInfoComponent implements OnInit {
    */
   handleLeaseSubmission(): void {
     if (!this.currentUser) return;
-    
+
     const submissionData = {
       ...this.leaseData,
       userId: this.currentUser.id,
-      email: this.currentUser.email
+      email: this.currentUser.email,
     };
     console.log('Lease Form Submitted:', submissionData);
     // In a real application, send this.leaseData to your backend API.
@@ -137,11 +146,11 @@ export class ServiceInfoComponent implements OnInit {
    */
   handleRentSubmission(): void {
     if (!this.currentUser) return;
-    
+
     const submissionData = {
       ...this.rentData,
       userId: this.currentUser.id,
-      email: this.currentUser.email
+      email: this.currentUser.email,
     };
     console.log('Rent Form Submitted:', submissionData);
     // In a real application, send this.rentData to your backend API.

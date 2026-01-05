@@ -16,6 +16,22 @@ export class AboutUsComponent {
       role: 'Founder',
       imageUrl: 'assets/images/uday.jpeg', // Dummy image
     },
+
+    {
+      name: 'Bhavani Hari',
+      role: 'Director CMO',
+      imageUrl: 'assets/images/hari.jpeg',
+    },
+    {
+      name: 'Chakuri Naresh Babu',
+      role: 'COO',
+      imageUrl: 'assets/images/naresh.jpeg',
+    },
+    {
+      name: 'B Vamseedhara Reddy',
+      role: 'CTO',
+      imageUrl: 'assets/images/vamshi.jpeg',
+    },
   ];
 
   constructor() {}

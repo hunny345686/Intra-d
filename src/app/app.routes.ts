@@ -11,13 +11,15 @@ import { AdminDashboardComponent } from './dashboards/admin-dashboard.component'
 import { RoleGuard } from './guards/role.guard';
 import { ProductListComponent } from './FPC/product-list/product-list.component';
 import { ProductDetailComponent } from './FPC/product-detail/product-detail.component';
+import { AdminPortalComponent } from './admin-portal/admin-portal.component';
 
 export const routes: Routes = [
   { path: '', component: HomepageComponent },
   { path: 'login', component: LoginComponent },
   {
     path: 'control',
-    component: AdminDashboardComponent,
+    // component: AdminDashboardComponent,
+    component: AdminPortalComponent,
     canActivate: [RoleGuard],
     data: { role: 'admin' },
   },

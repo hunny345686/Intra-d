@@ -128,10 +128,24 @@
                         </div>
                         <div class="col-md-6">
                             <label for="modalTypicalCrops" class="form-label fw-semibold">Typical Crops:</label>
-                            <input type="text" class="form-control rounded-md-custom" id="modalTypicalCrops"
-                                [(ngModel)]="signupData.typicalCrops" name="typicalCrops"
-                                placeholder="e.g., Wheat, Rice">
+                            <select class="form-select rounded-md-custom" id="modalTypicalCrops" name="typicalCrops"
+                                required>
+                                <option selected disabled value="">Select water source</option>
+                                <option value="mango">Mango</option>
+                                <option value="banana">Banana</option>
+                                <option value="papaya">Papaya</option>
+                                <option value="tomato">Tomato</option>
+                                <option value="onion">Onion</option>
+                                <option value="lemon">Lemon</option>
+                                <option value="watermelon">Watermelon</option>
+                                <option value="muskmelon">Muskmelon</option>
+                                <option value="spinach">Spinach</option>
+                                <option value="methi">Methi</option>
+                                <option value="coriander">Coriander</option>
+                                <option value="curry-leaves">Curry Leaves</option>
+                            </select>
                         </div>
+
                         <div class="col-md-6">
                             <label for="modalVillage" class="form-label fw-semibold">Village:</label>
                             <input type="text" class="form-control rounded-md-custom" id="modalVillage"
@@ -177,10 +191,11 @@
                             <select class="form-select rounded-md-custom" id="modalSoilType"
                                 [(ngModel)]="signupData.soilType" name="soilType" required>
                                 <option selected disabled value="">Select soil type</option>
+                                <option value="black">Black</option>
+                                <option value="Red">Red</option>
+                                <option value="laterite">Laterite</option>
                                 <option value="sandy">Sandy</option>
-                                <option value="clay">Clay</option>
-                                <option value="loamy">Loamy</option>
-                                <option value="silty">Silty</option>
+                                <option value="forest">Forest</option>
                                 <option value="alluvial">Alluvial</option>
                             </select>
                         </div>
