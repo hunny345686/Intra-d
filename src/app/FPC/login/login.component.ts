@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,11 @@ export class LoginComponent {
   @Output() loginSuccess = new EventEmitter<void>();
   @ViewChild('loginForm') loginHtmlForm!: NgForm;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private firebaseService: FirebaseService
+  ) {}
 
   private redirectByRole(): void {
     this.authService.currentUser$.subscribe(user => {
@@ -47,27 +52,70 @@ export class LoginComponent {
     
     this.isLoading = true;
     this.loginMessage = '';
+    console.log('Starting login process...');
     
-    this.authService.login(this.loginData.email, this.loginData.password)
-      .subscribe({
-        next: (success) => {
+    // First verify credentials exist in signUpFrom
+    this.firebaseService.getAllUsers().subscribe({
+      next: (users) => {
+        console.log('Retrieved users:', users);
+        const userFound = this.findUserByCredentials(users, this.loginData.email, this.loginData.password);
+        console.log('User found:', userFound);
+        
+        if (userFound) {
+          console.log('Logging signin to Firebase...');
+          // Log signin to signInForm API
+          this.firebaseService.authenticateUser(this.loginData.email, this.loginData.password)
+            .subscribe({
+              next: (response) => {
+                console.log('Signin logged successfully:', response);
+                // Get Firebase user with role
+                const firebaseUser = this.authService.validateFirebaseUser(this.loginData.email, this.loginData.password, users);
+                if (firebaseUser) {
+                  // Manually set the user in auth service
+                  this.authService.setCurrentUser(firebaseUser);
+                  this.isLoading = false;
+                  this.loginMessage = 'Login successful!';
+                  this.loginMessageType = 'success';
+                  this.loginHtmlForm.resetForm();
+                  this.loginSuccess.emit();
+                  this.redirectByRole();
+                }
+              },
+              error: (error) => {
+                console.error('Signin logging failed:', error);
+                this.isLoading = false;
+                this.loginMessage = 'Login logging failed. Please try again.';
+                this.loginMessageType = 'danger';
+              }
+            });
+        } else {
           this.isLoading = false;
-          if (success) {
-            this.loginMessage = 'Login successful!';
-            this.loginMessageType = 'success';
-            this.loginHtmlForm.resetForm();
-            this.loginSuccess.emit();
-            this.redirectByRole();
-          } else {
-            this.loginMessage = 'Invalid username or password.';
-            this.loginMessageType = 'danger';
-          }
-        },
-        error: () => {
-          this.isLoading = false;
-          this.loginMessage = 'Login failed. Please try again.';
+          this.loginMessage = 'Invalid email or password.';
           this.loginMessageType = 'danger';
         }
-      });
+      },
+      error: (error) => {
+        console.error('Failed to retrieve users:', error);
+        this.isLoading = false;
+        this.loginMessage = 'Login failed. Please try again.';
+        this.loginMessageType = 'danger';
+      }
+    });
+  }
+
+  private findUserByCredentials(users: any, email: string, password: string): boolean {
+    if (!users) return false;
+    
+    for (const userId in users) {
+      const userContainer = users[userId];
+      // Navigate through the nested structure
+      for (const firebaseKey in userContainer) {
+        const user = userContainer[firebaseKey];
+        if (user && user.email === email && user.password === password) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

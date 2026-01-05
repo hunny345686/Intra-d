@@ -52,10 +52,10 @@
                     data-bs-ride="carousel">
                     <div class="carousel-inner h-100">
                         <div class="carousel-item active">
-                            <img src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=900&h=350&fit=crop&crop=center"
+                            <img src="./../../../assets/images/tomato.png"
                                 class="d-block w-100 h-100" style="object-fit: cover;" alt="Agricultural Machinery">
                             <div class="carousel-caption d-none d-md-block">
-                                <h5>Modern Agricultural Machinery</h5>
+                                <!-- <h5>Modern Agricultural Machinery</h5> -->
                                 <p>Advanced farming equipment for efficient agriculture</p>
                             </div>
                         </div>
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=900&h=350&fit=crop&crop=center"
+                            <img src="./../../../assets/images/papaya.png"
                                 class="d-block w-100 h-100" style="object-fit: cover;" alt="Tractor in Field">
                             <div class="carousel-caption d-none d-md-block">
                                 <h5>Smart Farming Solutions</h5>
@@ -167,10 +167,10 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="modalAadharNo" class="form-label fw-semibold">Aadhar No:</label>
-                            <input type="text" class="form-control rounded-md-custom" id="modalAadharNo"
-                                [(ngModel)]="signupData.aadharNo" name="aadharNo" placeholder="Enter your Aadhar number"
-                                pattern="[0-9]{12}" title="Aadhar number must be 12 digits" required>
+                            <label for="modalMobileNo" class="form-label fw-semibold">Mobile No:</label>
+                            <input type="tel" class="form-control rounded-md-custom" id="modalMobileNo"
+                                [(ngModel)]="signupData.mobileNo" name="mobileNo" placeholder="Enter your mobile number"
+                                pattern="[0-9]{10}" title="Mobile number must be 10 digits" required>
                         </div>
                         <div class="col-md-6">
                             <label for="modalSoilType" class="form-label fw-semibold">Soil Type:</label>
@@ -200,6 +200,16 @@
                                 <option value="mop">MOP (Potash)</option>
                                 <option value="npk">NPK Complex</option>
                                 <option value="organic">Organic Fertilizers</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modalRole" class="form-label fw-semibold">Role:</label>
+                            <select class="form-select rounded-md-custom" id="modalRole"
+                                [(ngModel)]="signupData.role" name="role" required>
+                                <option selected disabled value="">Select your role</option>
+                                <option value="farmer">Farmer</option>
+                                <option value="user">Buyer</option>
+                                <option value="admin">Admin</option>
                             </select>
                         </div>
                     </div>

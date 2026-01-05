@@ -15,8 +15,8 @@ export class CareerComponent {
   showSearchResults = false;
   foundJobs: any[] = [];
   
-  locations = ['Hyderabad', 'Bangalore', 'Chennai', 'Mumbai', 'Delhi'];
-  domains = ['Software Development', 'Data Science', 'Marketing', 'Sales', 'HR'];
+  locations = ['Anantapur', 'Kadapa','Tirupathi'];
+  domains = ['Software Development', 'R&D', 'Marketing', 'Sales', 'Labour','Agricultural-Scientist','Soil test assistance','Electrican','Security Guard','Driver'];
 
   searchJobs() {
     this.showSearchResults = true;
