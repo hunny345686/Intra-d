@@ -9,6 +9,7 @@ import {
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
+import { FirebaseService } from '../../services/firebase.service';
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
 
@@ -62,7 +63,8 @@ export class ServiceInfoComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     @Inject(DOCUMENT) private document: Document,
-    private authService: AuthService
+    private authService: AuthService,
+    private firebaseService: FirebaseService
   ) {}
 
   ngOnInit(): void {
@@ -111,34 +113,34 @@ export class ServiceInfoComponent implements OnInit {
    * Handles Lease Application Form submission.
    */
   handleLeaseSubmission(): void {
-    if (!this.currentUser) return;
-
+    if (!this.currentUser || this.leaseHtmlForm.invalid) return;
+    
     const submissionData = {
       ...this.leaseData,
       userId: this.currentUser.id,
       email: this.currentUser.email,
     };
-    console.log('Lease Form Submitted:', submissionData);
-    // In a real application, send this.leaseData to your backend API.
 
-    // Show success modal
-    const successModalElement = this.document.getElementById(
-      'successModalDashboard'
-    ); // Use a distinct ID
-    if (successModalElement) {
-      const successModal =
-        bootstrap.Modal.getInstance(successModalElement) ||
-        new bootstrap.Modal(successModalElement);
-      this.document.getElementById('successModalLabelDashboard')!.textContent =
-        'Lease Inquiry Success';
-      (
-        this.document.querySelector(
-          '#successModalDashboard .modal-body'
-        ) as HTMLElement
-      ).textContent = 'Your lease inquiry has been submitted successfully!';
-      successModal.show();
-    }
-    this.leaseHtmlForm.resetForm(); // Reset the form using NgForm reference
+    this.firebaseService.createLeaseApplication(submissionData).subscribe({
+      next: (response) => {
+        console.log('Lease application created:', response);
+        
+        // Show success modal
+        const successModalElement = this.document.getElementById('successModalDashboard');
+        if (successModalElement) {
+          const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
+          this.document.getElementById('successModalLabelDashboard')!.textContent = 'Lease Application Submitted';
+          (this.document.querySelector('#successModalDashboard .modal-body') as HTMLElement).textContent = 'Your lease application has been submitted successfully!';
+          successModal.show();
+        }
+        
+        this.leaseHtmlForm.resetForm();
+      },
+      error: (error) => {
+        console.error('Error submitting lease application:', error);
+        alert('Failed to submit lease application. Please try again.');
+      }
+    });
   }
 
   /**

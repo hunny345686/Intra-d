@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http'; // Import HttpClient
 import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
+import { FirebaseService } from '../../services/firebase.service';
 
 // To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
@@ -21,10 +22,11 @@ interface SignupFormData {
   waterSource: string;
   mandal: string;
   soilTest: string;
-  aadharNo: string;
+  mobileNo: string;
   soilType: string;
   acreOfLand: number | null; // Changed to number
   fertilizers: string;
+  role: string;
 }
 
 @Component({
@@ -53,17 +55,22 @@ export class HomepageComponent implements OnInit {
     waterSource: '',
     mandal: '',
     soilTest: '',
-    aadharNo: '',
+    mobileNo: '',
     soilType: '',
     acreOfLand: null,
     fertilizers: '',
+    role: '',
   };
   @ViewChild('signupForm') signupHtmlForm!: NgForm;
 
   private apiKey = '93e63dcc1fb38ed986a59514d85dbbd1';
   private apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
-  constructor(private authService: AuthService, private http: HttpClient) {}
+  constructor(
+    private authService: AuthService, 
+    private http: HttpClient,
+    private firebaseService: FirebaseService
+  ) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe((user) => {
@@ -184,31 +191,40 @@ export class HomepageComponent implements OnInit {
     }
   }
   handleSignup(): void {
-    console.log('Sign Up Form Submitted:', this.signupData);
-    // In a real application, send this.signupData to your backend API.
-
-    // Hide signup modal
-    const signupModalElement = document.getElementById('signupModal');
-    if (signupModalElement) {
-      const signupModal =
-        bootstrap.Modal.getInstance(signupModalElement) ||
-        new bootstrap.Modal(signupModalElement);
-      signupModal.hide();
+    if (this.signupHtmlForm.invalid) {
+      return;
     }
 
-    // Show generic success modal
-    const successModalElement = document.getElementById('successModal');
-    if (successModalElement) {
-      const successModal =
-        bootstrap.Modal.getInstance(successModalElement) ||
-        new bootstrap.Modal(successModalElement);
-      document.getElementById('successModalLabel')!.textContent =
-        'Sign Up Success';
-      (
-        document.querySelector('#successModal .modal-body') as HTMLElement
-      ).textContent = 'Your sign-up form has been submitted successfully!';
-      successModal.show();
-    }
-    this.signupHtmlForm.resetForm(); // Reset the form using NgForm reference
+    this.firebaseService.createUser(this.signupData).subscribe({
+      next: (response) => {
+        console.log('User created successfully:', response);
+        
+        // Hide signup modal
+        const signupModalElement = document.getElementById('signupModal');
+        if (signupModalElement) {
+          const signupModal = bootstrap.Modal.getInstance(signupModalElement) || new bootstrap.Modal(signupModalElement);
+          signupModal.hide();
+        }
+
+        // Show success modal with credentials
+        const successModalElement = document.getElementById('successModal');
+        if (successModalElement) {
+          const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
+          document.getElementById('successModalLabel')!.textContent = 'Registration Successful';
+          (document.querySelector('#successModal .modal-body') as HTMLElement).innerHTML = 
+            `<p>Your account has been created successfully!</p>
+             <p><strong>Email:</strong> ${this.signupData.name.toLowerCase().replace(/\s+/g, '')}@intra-d.com</p>
+             <p><strong>Password:</strong> ${response.generatedPassword}</p>
+             <p>Please save these credentials for future login.</p>`;
+          successModal.show();
+        }
+        
+        this.signupHtmlForm.resetForm();
+      },
+      error: (error) => {
+        console.error('Error creating user:', error);
+        alert('Registration failed. Please try again.');
+      }
+    });
   }
 }

@@ -31,6 +31,26 @@ export class AuthService {
     return of(false);
   }
 
+  // Method to validate Firebase user and get role
+  validateFirebaseUser(email: string, password: string, firebaseUsers: any): User | null {
+    if (!firebaseUsers) return null;
+    
+    for (const userId in firebaseUsers) {
+      const userContainer = firebaseUsers[userId];
+      for (const firebaseKey in userContainer) {
+        const user = userContainer[firebaseKey];
+        if (user && user.email === email && user.password === password) {
+          return { 
+            id: user.userId || userId, 
+            email: user.email, 
+            role: user.role || 'farmer' 
+          };
+        }
+      }
+    }
+    return null;
+  }
+
   private validateUser(email: string, password: string): User | null {
     const users = [
       { id: '1', email: 'admin@intrad.com', password: 'admin123', role: 'admin' },
@@ -39,7 +59,19 @@ export class AuthService {
     ];
     
     const foundUser = users.find(u => u.email === email && u.password === password);
-    return foundUser ? { id: foundUser.id, email: foundUser.email, role: foundUser.role } : null;
+    if (foundUser) {
+      return { id: foundUser.id, email: foundUser.email, role: foundUser.role };
+    }
+    
+    // For Firebase users, role will be determined in login component
+    return null;
+  }
+
+  setCurrentUser(user: User): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+    }
+    this.currentUserSubject.next(user);
   }
 
   logout(): void {

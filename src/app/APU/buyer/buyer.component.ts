@@ -51,8 +51,8 @@ export class BuyerComponent implements OnInit {
                 powder: 'Powder',
               },
             },
-            apple: {
-              label: 'Apple',
+            tomato: {
+              label: 'Tomato',
               details: {
                 diced: 'Diced',
                 juice: 'Juice Concentrate',
