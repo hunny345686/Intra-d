@@ -219,3 +219,13 @@ h3.text-secondary-blue {
     margin-bottom: 0.5rem; /* Space below icon */
   }
 }
+
+/* Ensure the feature list area has a consistent height across cards */
+.plan-header {
+  min-height: 200px; /* Adjust based on your longest list */
+}
+
+/* Optional: Smooth transition for the collapse */
+.collapse {
+  transition: all 0.3s ease-out;
+}

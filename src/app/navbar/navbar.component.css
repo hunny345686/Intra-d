@@ -20,21 +20,15 @@
   font-family: "Inter", sans-serif;
 }
 
-.navbar-logo {
-  height: 80px; /* Adjust logo size */
-  margin-right: 0.75rem; /* Space between logo and brand text */
-}
-
 .navbar-brand .fw-bold {
   color: var(--navbar-brand-color); /* FoodCops brand color */
 }
-.nav-background{
-  background-color:#00807633 !important;
+.nav-background {
+  background-color: #00807633 !important;
 }
 .rounded-circle {
-    border-radius: 15% !important;
+  border-radius: 15% !important;
 }
-
 
 .navbar-nav .nav-link {
   color: var(--nav-link-color);
@@ -93,6 +87,17 @@
   background-color: var(--nav-link-active-bg);
   color: var(--nav-link-active-color) !important;
   font-weight: 600;
+}
+
+.logo-text {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo-text .small {
+  font-size: 10px;
 }
 
 /* Responsive adjustments */
