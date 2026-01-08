@@ -8,7 +8,7 @@
         </div>
 
         <div class="row g-4">
-            <div class=" col-lg-3 col-md-4 col-sm-6" *ngFor="let member of teamMembers">
+            <div class=" col" *ngFor="let member of teamMembers">
                 <div class="team-member-card text-center shadow-sm">
                     <img [src]="member.imageUrl" alt="{{ member.name }}"
                         class="img-fluid rounded-circle mb-3 team-member-img">
@@ -25,17 +25,15 @@
     <div class="container-fluid h-100">
         <div class="row h-100 g-0">
             <div
-                class="col-md-4 contact-item contact-item-light d-flex flex-column justify-content-center align-items-center">
-                <i class="fas fa-paper-plane fa-2x mb-3 text-dark"></i>
+                class="col-md-4 contact-item contact-item-light d-flex gap-3 justify-content-center align-items-center">
+                <i class="fas fa-paper-plane fa-2x text-dark"></i>
                 <p class="mb-0 text-dark">intra-d&#64;agri.com</p>
             </div>
-            <div
-                class="col-md-4 contact-item contact-item-red d-flex flex-column justify-content-center align-items-center">
-                <i class="fas fa-mobile-alt fa-2x mb-3 text-white"></i>
-                <p class="mb-0 text-white">+91 9000350635</p>
+            <div class="col-md-4 contact-item contact-item-red d-flex gap-3 justify-content-center align-items-center">
+                <i class="fas fa-mobile-alt fa-2x text-white"></i>
+                <p class="mb-0 text-white">+91 9030353080</p>
             </div>
-            <div
-                class="col-md-4 contact-item contact-item-blue d-flex flex-column justify-content-center align-items-center">
+            <div class="col-md-4 contact-item contact-item-blue d-flex gap-3 justify-content-center align-items-center">
                 <i class="fab fa-linkedin-in fa-2x me-2 text-white"></i>
                 <i class="fab fa-instagram fa-2x me-2 text-white"></i>
                 <i class="fab fa-facebook-f fa-2x text-white"></i>

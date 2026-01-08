@@ -76,10 +76,14 @@
   transition: background-color 0.15s ease-in-out;
 }
 
-.navbar-nav .dropdown-item:hover,
+.navbar-nav .dropdown-menu .dropdown-item:hover,
 .navbar-nav .dropdown-item:focus {
   background-color: var(--dropdown-item-hover-bg);
   color: var(--nav-link-active-color); /* Match active link color */
+}
+
+.btn.show {
+  background-color: var(--btn-outline-secondary-blue-hover-color);
 }
 
 /* Active state for dropdown items */

@@ -131,3 +131,12 @@
     width: 100%; /* Stack columns on small screens */
   }
 }
+
+.benefit-item.text-white ul {
+  text-align: left;
+  list-style: circle;
+}
+.benefit-item.text-white ul li {
+  padding-block: 16px;
+  font-size: 20px;
+}
