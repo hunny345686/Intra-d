@@ -18,19 +18,25 @@ export class AboutUsComponent {
     },
 
     {
+      name: 'B Vamseedhara Reddy',
+      role: 'CTO',
+      imageUrl: 'assets/images/vamshi.jpeg',
+    },
+
+    {
       name: 'Bhavani Hari',
       role: 'Director CMO',
       imageUrl: 'assets/images/hari.jpeg',
     },
     {
-      name: 'Chakuri Naresh Babu',
-      role: 'COO',
+      name: 'Chekuri Naresh Babu',
+      role: 'Director',
       imageUrl: 'assets/images/naresh.jpeg',
     },
     {
-      name: 'B Vamseedhara Reddy',
-      role: 'CTO',
-      imageUrl: 'assets/images/vamshi.jpeg',
+      name: 'Singamala Siva Prasad',
+      role: 'Director',
+      imageUrl: 'https://placehold.co/500x500?text=SivaPrasad',
     },
   ];
 

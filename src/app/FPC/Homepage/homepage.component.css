@@ -122,9 +122,10 @@
   height: 100%;
 }
 
-#homepageCarousel .carousel-item img {
-  height: 100%;
+#homepageCarousel .carousel-item img.d-block {
+  height: 570px;
   object-fit: cover;
+  width: 100%;
 }
 
 /* Login card alignment and sizing */
