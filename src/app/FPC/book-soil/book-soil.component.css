@@ -140,3 +140,125 @@
   padding-block: 16px;
   font-size: 20px;
 }
+
+/* Header */
+.header {
+  background: #1f7a4d;
+  color: white;
+  padding: 16px;
+  text-align: center;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.tab {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #e5e5e5;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #1f7a4d;
+  color: white;
+}
+
+/* Main Layout */
+.container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Left Panel */
+.left-panel {
+  flex: 2;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.info-card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
+}
+
+.info-card h3 {
+  margin: 0 0 8px;
+  color: #1f7a4d;
+}
+
+/* Right Panel */
+.right-panel {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.soil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.soil-form label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.soil-form input,
+.soil-form select,
+.soil-form textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.soil-form textarea {
+  resize: none;
+  height: 80px;
+}
+
+.soil-form button {
+  margin-top: 10px;
+  padding: 12px;
+  background: #1f7a4d;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.soil-form button:hover {
+  background: #16603b;
+}
+.bottom {
+  flex: 1;
+}
+
+.left-panel h2 {
+  padding-bottom: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}

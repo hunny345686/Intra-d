@@ -4,7 +4,7 @@
     <!-- Pre-Login Content -->
     <div *ngIf="!isLoggedIn">
         <!-- Category Buttons Section -->
-        <div id="category-buttons-section" class="row text-center gx-2 gy-2 mb-4">
+        <div id="category-buttons-section" class="row text-center gx-2 gy-2 mb-4 justify-content-end">
             <div class="col-6 col-lg-2">
                 <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" data-bs-toggle="modal"
                     data-bs-target="#comingSoonModal" (click)="setComingSoonFeature('Machinery')">
@@ -67,7 +67,7 @@
                             </div>
                         </div>
                         <div class="carousel-item">
-                            <img src="./../../../assets/images/papaya.png" class="d-block" alt="Tractor in Field">
+                            <img src="./../../../assets/images/papaya.jpeg" class="d-block" alt="Tractor in Field">
                             <div class="carousel-caption d-none d-md-block">
                                 <h5>Smart Farming Solutions</h5>
                                 <p>Technology-driven agriculture for better yields</p>
@@ -120,6 +120,16 @@
                 <form (ngSubmit)="handleSignup()" #signupForm="ngForm" novalidate>
                     <div class="row g-3">
                         <div class="col-md-6">
+                            <label for="modalRole" class="form-label fw-semibold">Role:</label>
+                            <select class="form-select rounded-md-custom" id="modalRole" [(ngModel)]="signupData.role"
+                                name="role" required>
+                                <option selected disabled value="">Select your role</option>
+                                <option value="farmer">Farmer</option>
+                                <option value="Buyer /Seller">Buyer / Seller</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                             <label for="modalName" class="form-label fw-semibold">Name:</label>
                             <input type="text" class="form-control rounded-md-custom" id="modalName"
                                 [(ngModel)]="signupData.name" name="name" placeholder="Enter your full name" required>
@@ -128,7 +138,7 @@
                             <label for="modalTypicalCrops" class="form-label fw-semibold">Typical Crops:</label>
                             <select class="form-select rounded-md-custom" id="modalTypicalCrops" name="typicalCrops"
                                 required>
-                                <option selected disabled value="">Select water source</option>
+                                <option selected disabled value="">Select Crop</option>
                                 <option value="mango">Mango</option>
                                 <option value="banana">Banana</option>
                                 <option value="papaya">Papaya</option>
@@ -143,98 +153,91 @@
                                 <option value="curry-leaves">Curry Leaves</option>
                             </select>
                         </div>
-
-                        <div class="col-md-6">
-                            <label for="modalVillage" class="form-label fw-semibold">Village:</label>
-                            <input type="text" class="form-control rounded-md-custom" id="modalVillage"
-                                [(ngModel)]="signupData.village" name="village" placeholder="Enter your village name"
-                                required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="modalWaterSource" class="form-label fw-semibold">Water Source:</label>
-                            <select class="form-select rounded-md-custom" id="modalWaterSource"
-                                [(ngModel)]="signupData.waterSource" name="waterSource" required>
-                                <option selected disabled value="">Select water source</option>
-                                <option value="well">Well</option>
-                                <option value="borewell">Borewell</option>
-                                <option value="canal">Canal</option>
-                                <option value="river">River</option>
-                                <option value="rainfed">Rainfed</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="modalMandal" class="form-label fw-semibold">Mandal:</label>
-                            <input type="text" class="form-control rounded-md-custom" id="modalMandal"
-                                [(ngModel)]="signupData.mandal" name="mandal" placeholder="Enter your mandal" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="modalSoilTest" class="form-label fw-semibold">Soil Test:</label>
-                            <select class="form-select rounded-md-custom" id="modalSoilTest"
-                                [(ngModel)]="signupData.soilTest" name="soilTest">
-                                <option selected disabled value="">Select soil test result (Optional)</option>
-                                <option value="tested-high">Tested - High Nutrients</option>
-                                <option value="tested-medium">Tested - Medium Nutrients</option>
-                                <option value="tested-low">Tested - Low Nutrients</option>
-                                <option value="not-tested">Not Tested</option>
-                            </select>
-                        </div>
                         <div class="col-md-6">
                             <label for="modalMobileNo" class="form-label fw-semibold">Mobile No:</label>
                             <input type="tel" class="form-control rounded-md-custom" id="modalMobileNo"
                                 [(ngModel)]="signupData.mobileNo" name="mobileNo" placeholder="Enter your mobile number"
                                 pattern="[0-9]{10}" title="Mobile number must be 10 digits" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="modalSoilType" class="form-label fw-semibold">Soil Type:</label>
-                            <select class="form-select rounded-md-custom" id="modalSoilType"
-                                [(ngModel)]="signupData.soilType" name="soilType" required>
-                                <option selected disabled value="">Select soil type</option>
-                                <option value="black">Black</option>
-                                <option value="Red">Red</option>
-                                <option value="laterite">Laterite</option>
-                                <option value="sandy">Sandy</option>
-                                <option value="forest">Forest</option>
-                                <option value="alluvial">Alluvial</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="modalAcreOfLand" class="form-label fw-semibold">Acre of Land:</label>
-                            <input type="number" class="form-control rounded-md-custom" id="modalAcreOfLand"
-                                [(ngModel)]="signupData.acreOfLand" name="acreOfLand"
-                                placeholder="Enter acres of land owned" min="0" step="any" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="modalFertilizers" class="form-label fw-semibold">Fertilizers:</label>
-                            <select class="form-select rounded-md-custom" id="modalFertilizers"
-                                [(ngModel)]="signupData.fertilizers" name="fertilizers" required>
-                                <option selected disabled value="">Select common fertilizers used</option>
-                                <option value="urea">Urea</option>
-                                <option value="dap">DAP</option>
-                                <option value="mop">MOP (Potash)</option>
-                                <option value="npk">NPK Complex</option>
-                                <option value="organic">Organic Fertilizers</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="modalRole" class="form-label fw-semibold">Role:</label>
-                            <select class="form-select rounded-md-custom" id="modalRole" [(ngModel)]="signupData.role"
-                                name="role" required>
-                                <option selected disabled value="">Select your role</option>
-                                <option value="farmer">Farmer</option>
-                                <option value="user">Buyer</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
+                        <ng-container *ngIf="signupData.role !== 'Buyer /Seller'">
+                            <div class="col-md-6">
+                                <label for="modalVillage" class="form-label fw-semibold">Village:</label>
+                                <input type="text" class="form-control rounded-md-custom" id="modalVillage"
+                                    [(ngModel)]="signupData.village" name="village"
+                                    placeholder="Enter your village name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modalWaterSource" class="form-label fw-semibold">Water Source:</label>
+                                <select class="form-select rounded-md-custom" id="modalWaterSource"
+                                    [(ngModel)]="signupData.waterSource" name="waterSource" required>
+                                    <option selected disabled value="">Select water source</option>
+                                    <option value="well">Well</option>
+                                    <option value="borewell">Borewell</option>
+                                    <option value="canal">Canal</option>
+                                    <option value="river">River</option>
+                                    <option value="rainfed">Rainfed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modalMandal" class="form-label fw-semibold">Mandal:</label>
+                                <input type="text" class="form-control rounded-md-custom" id="modalMandal"
+                                    [(ngModel)]="signupData.mandal" name="mandal" placeholder="Enter your mandal"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modalSoilTest" class="form-label fw-semibold">Soil Test:</label>
+                                <select class="form-select rounded-md-custom" id="modalSoilTest"
+                                    [(ngModel)]="signupData.soilTest" name="soilTest">
+                                    <option selected disabled value="">Select soil test result (Optional)</option>
+                                    <option value="tested-high">Tested - High Nutrients</option>
+                                    <option value="tested-medium">Tested - Medium Nutrients</option>
+                                    <option value="tested-low">Tested - Low Nutrients</option>
+                                    <option value="not-tested">Not Tested</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modalSoilType" class="form-label fw-semibold">Soil Type:</label>
+                                <select class="form-select rounded-md-custom" id="modalSoilType"
+                                    [(ngModel)]="signupData.soilType" name="soilType" required>
+                                    <option selected disabled value="">Select soil type</option>
+                                    <option value="black">Black</option>
+                                    <option value="Red">Red</option>
+                                    <option value="laterite">Laterite</option>
+                                    <option value="sandy">Sandy</option>
+                                    <option value="forest">Forest</option>
+                                    <option value="alluvial">Alluvial</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modalAcreOfLand" class="form-label fw-semibold">Acre of Land:</label>
+                                <input type="number" class="form-control rounded-md-custom" id="modalAcreOfLand"
+                                    [(ngModel)]="signupData.acreOfLand" name="acreOfLand"
+                                    placeholder="Enter acres of land owned" min="0" step="any" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="modalFertilizers" class="form-label fw-semibold">Fertilizers:</label>
+                                <select class="form-select rounded-md-custom" id="modalFertilizers"
+                                    [(ngModel)]="signupData.fertilizers" name="fertilizers" required>
+                                    <option selected disabled value="">Select common fertilizers used</option>
+                                    <option value="urea">Urea</option>
+                                    <option value="dap">DAP</option>
+                                    <option value="mop">MOP (Potash)</option>
+                                    <option value="npk">NPK Complex</option>
+                                    <option value="organic">Organic Fertilizers</option>
+                                </select>
+                            </div>
+                        </ng-container>
+
                     </div>
-                    <button type="submit"
-                        class="btn btn-primary-green rounded-md-custom mt-4 px-5 py-2 shadow-lg fw-semibold"
-                        [disabled]="!signupForm.valid">Submit</button>
+                    <div class="modal-footer p-3 border-top d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary-green rounded-md-custom fw-semibold"
+                            [disabled]="!signupForm.valid">Submit</button>
+                        <button type="button" class="btn btn-secondary rounded-md-custom"
+                            data-bs-dismiss="modal">Cancel</button>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer p-3 border-top d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary rounded-md-custom"
-                    data-bs-dismiss="modal">Cancel</button>
-            </div>
+
         </div>
     </div>
 </div>

@@ -67,7 +67,7 @@ export class HomepageComponent implements OnInit {
   private apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private http: HttpClient,
     private firebaseService: FirebaseService
   ) {}
@@ -198,33 +198,41 @@ export class HomepageComponent implements OnInit {
     this.firebaseService.createUser(this.signupData).subscribe({
       next: (response) => {
         console.log('User created successfully:', response);
-        
+
         // Hide signup modal
         const signupModalElement = document.getElementById('signupModal');
         if (signupModalElement) {
-          const signupModal = bootstrap.Modal.getInstance(signupModalElement) || new bootstrap.Modal(signupModalElement);
+          const signupModal =
+            bootstrap.Modal.getInstance(signupModalElement) ||
+            new bootstrap.Modal(signupModalElement);
           signupModal.hide();
         }
 
         // Show success modal with credentials
         const successModalElement = document.getElementById('successModal');
         if (successModalElement) {
-          const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
-          document.getElementById('successModalLabel')!.textContent = 'Registration Successful';
-          (document.querySelector('#successModal .modal-body') as HTMLElement).innerHTML = 
-            `<p>Your account has been created successfully!</p>
-             <p><strong>Email:</strong> ${this.signupData.name.toLowerCase().replace(/\s+/g, '')}@intra-d.com</p>
+          const successModal =
+            bootstrap.Modal.getInstance(successModalElement) ||
+            new bootstrap.Modal(successModalElement);
+          document.getElementById('successModalLabel')!.textContent =
+            'Registration Successful';
+          (
+            document.querySelector('#successModal .modal-body') as HTMLElement
+          ).innerHTML = `<p>Your account has been created successfully!</p>
+             <p><strong>Email:</strong> ${this.signupData.name
+               .toLowerCase()
+               .replace(/\s+/g, '')}@intra-d.com</p>
              <p><strong>Password:</strong> ${response.generatedPassword}</p>
              <p>Please save these credentials for future login.</p>`;
           successModal.show();
         }
-        
+
         this.signupHtmlForm.resetForm();
       },
       error: (error) => {
         console.error('Error creating user:', error);
         alert('Registration failed. Please try again.');
-      }
+      },
     });
   }
 }
