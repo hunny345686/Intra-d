@@ -6,6 +6,11 @@
                 <p class="text-muted mb-0">Manage your agricultural services and subscriptions</p>
             </div>
             <div *ngIf="currentUser" class="d-flex align-items-center gap-3">
+                <button *ngIf="currentUser.role === 'admin'" 
+                        class="btn btn-outline-primary rounded-md-custom" 
+                        [routerLink]="['/control']">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Control
+                </button>
                 <div class="text-end">
                     <div class="fw-semibold text-dark">{{currentUser.email}}</div>
                     <small class="text-muted">{{currentUser.role | titlecase}} Account</small>

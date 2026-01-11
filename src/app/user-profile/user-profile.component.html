@@ -1,0 +1,131 @@
+<div class="profile-container" *ngIf="currentUser && profileData">
+  <!-- Header -->
+  <div class="profile-header">
+    <button class="back-btn" (click)="navigateBack()">
+      <span class="back-icon">←</span>
+    </button>
+    <h1 class="profile-title">{{ currentUser.role | titlecase }} Profile</h1>
+    <button class="edit-btn">
+      <span class="edit-icon">✏️</span>
+    </button>
+  </div>
+
+  <!-- Profile Info -->
+  <div class="profile-info">
+    <div class="profile-avatar">
+      <img [src]="profileData.profileImage" [alt]="profileData.name" 
+           onerror="this.src='assets/images/default-avatar.svg'">
+    </div>
+    <div class="profile-details">
+      <h2 class="profile-name">{{ profileData.name }}</h2>
+      <div class="role-badge" [ngClass]="'role-' + currentUser.role">
+        <span class="role-icon">🏠</span>
+        {{ currentUser.role | titlecase }}
+      </div>
+      <div class="location">
+        <span class="location-icon">📍</span>
+        {{ profileData.location }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Role-specific Stats -->
+  <div class="stats-section" *ngIf="currentUser.role === 'farmer'">
+    <div class="stat-item">
+      <div class="stat-icon">🌱</div>
+      <div class="stat-content">
+        <div class="stat-label">Land</div>
+        <div class="stat-value">{{ profileData.roleSpecific.land }}</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">🌾</div>
+      <div class="stat-content">
+        <div class="stat-label">Crops</div>
+        <div class="stat-value">{{ profileData.roleSpecific.crops }}</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">🧪</div>
+      <div class="stat-content">
+        <div class="stat-label">Soil</div>
+        <div class="stat-value">{{ profileData.roleSpecific.soilType }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions" *ngIf="currentUser.role === 'farmer'">
+    <div class="action-row">
+      <div class="action-card" (click)="navigateToMyCrops()">
+        <div class="action-icon">🌱</div>
+        <div class="action-content">
+          <div class="action-title">My Crops</div>
+          <div class="action-subtitle">My Crops</div>
+        </div>
+      </div>
+      <div class="action-card" (click)="navigateToSoilTest()">
+        <div class="action-icon">🧪</div>
+        <div class="action-content">
+          <div class="action-title">Soil Test</div>
+          <div class="action-subtitle">Black Soil</div>
+        </div>
+      </div>
+    </div>
+    <div class="action-row">
+      <div class="action-card" (click)="navigateToMarketPrices()">
+        <div class="action-icon">💰</div>
+        <div class="action-content">
+          <div class="action-title">My Crops</div>
+          <div class="action-subtitle">Market Prices</div>
+        </div>
+      </div>
+      <div class="action-card" (click)="navigateToHelpCenter()">
+        <div class="action-icon">❓</div>
+        <div class="action-content">
+          <div class="action-title">Help Center</div>
+          <div class="action-subtitle">Help Center</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Section -->
+  <div class="account-section">
+    <h3 class="section-title">Account</h3>
+    <div class="account-item">
+      <span class="account-icon">📞</span>
+      <span class="account-label">{{ profileData.phone }}</span>
+      <span class="account-arrow">›</span>
+    </div>
+    <div class="account-item">
+      <span class="account-icon">🌐</span>
+      <span class="account-label">Language: {{ profileData.language }}</span>
+      <span class="account-arrow">›</span>
+    </div>
+    <div class="account-item logout-item" (click)="logout()">
+      <span class="account-icon logout-icon">🚪</span>
+      <span class="account-label logout-text">Logout</span>
+    </div>
+  </div>
+
+  <!-- Bottom Quick Actions (Mobile) -->
+  <!-- <div class="bottom-actions" *ngIf="currentUser.role === 'farmer'">
+    <div class="bottom-action" (click)="navigateToMyCrops()">
+      <div class="bottom-icon">🌱</div>
+      <div class="bottom-label">My Crops</div>
+    </div>
+    <div class="bottom-action" (click)="navigateToSoilTest()">
+      <div class="bottom-icon">🧪</div>
+      <div class="bottom-label">Soil Test</div>
+    </div>
+    <div class="bottom-action" (click)="navigateToMarketPrices()">
+      <div class="bottom-icon">💰</div>
+      <div class="bottom-label">Market Prices</div>
+    </div>
+    <div class="bottom-action" (click)="navigateToHelpCenter()">
+      <div class="bottom-icon">❓</div>
+      <div class="bottom-label">Help Center</div>
+    </div>
+  </div> -->
+</div>

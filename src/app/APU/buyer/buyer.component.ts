@@ -1,30 +1,12 @@
-// src/app/buyer/buyer.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // For *ngIf, *ngFor
-import { FormsModule, NgForm } from '@angular/forms'; // For [(ngModel)]
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, User } from '../../services/auth.service';
 
 interface DropdownOption {
   label: string;
   value: string;
-}
-
-interface ProductData {
-  [key: string]: {
-    label: string;
-    subCategories?: {
-      [key: string]: {
-        label: string;
-        productTypes?: {
-          [key: string]: {
-            label: string;
-            details?: {
-              [key: string]: string; // value: label
-            };
-          };
-        };
-      };
-    };
-  };
 }
 
 @Component({
@@ -32,253 +14,65 @@ interface ProductData {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './buyer.component.html',
-  styleUrls: ['./buyer.component.css'],
+  styleUrls: ['./buyer.component.css']
 })
 export class BuyerComponent implements OnInit {
-  // Data structure for all dropdowns
-  productHierarchy: ProductData = {
-    'fruits-vegetables': {
-      label: 'Fruits & Vegetables',
-      subCategories: {
-        fruits: {
-          label: 'Fruits',
-          productTypes: {
-            mango: {
-              label: 'Mango',
-              details: {
-                slices: 'Slices',
-                granules: 'Granules',
-                powder: 'Powder',
-              },
-            },
-            tomato: {
-              label: 'Tomato',
-              details: {
-                diced: 'Diced',
-                juice: 'Juice Concentrate',
-              },
-            },
-            banana: {
-              label: 'Banana',
-              details: {
-                chips: 'Chips',
-                powder: 'Powder',
-              },
-            },
-          },
-        },
-        vegetables: {
-          label: 'Vegetables',
-          productTypes: {
-            onion: {
-              label: 'Onion',
-              details: {
-                flakes: 'Flakes',
-                powder: 'Powder',
-              },
-            },
-            garlic: {
-              label: 'Garlic',
-              details: {
-                flakes: 'Flakes',
-                powder: 'Powder',
-              },
-            },
-            ginger: {
-              label: 'Ginger',
-              details: {
-                powder: 'Powder',
-                slices: 'Slices',
-              },
-            },
-            tomato: {
-              label: 'Tomato',
-              details: {
-                powder: 'Powder',
-                paste: 'Paste',
-              },
-            },
-          },
-        },
-      },
-    },
-    cereals: {
-      label: 'Cereals',
-      subCategories: {
-        wheat: {
-          label: 'Wheat',
-          // productTypes: {
-          //   flour: 'Flour',
-          //   grains: 'Grains',
-          // },
-        },
-      },
-    },
-    pulses: {
-      label: 'Pulses',
-      subCategories: {
-        lentils: {
-          label: 'Lentils',
-          // productTypes: {
-          //   whole: 'Whole',
-          //   split: 'Split',
-          // },
-        },
-      },
-    },
-  };
-
-  // Dropdown options for the template
   mainCategories: DropdownOption[] = [];
   subCategories: DropdownOption[] = [];
   productTypes: DropdownOption[] = [];
   detailsOptions: DropdownOption[] = [];
+  currentUser: User | null = null;
 
-  // Selected values from dropdowns
-  selectedMainCategory: string = '';
-  selectedSubCategory: string = '';
-  selectedProductType: string = '';
-  selectedDetails: string = '';
+  selectedMainCategory = '';
+  selectedSubCategory = '';
+  selectedProductType = '';
+  selectedDetails = '';
 
-  // Buyer data for database/API
-  buyerData = {
-    name: '',
-    email: '',
-    phone: '',
-    quantity: ''
-  };
+  buyerData = { name: '', email: '', phone: '', quantity: '' };
 
-  constructor() {}
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.populateMainCategories();
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+    
+    this.mainCategories = [
+      { label: 'Fruits & Vegetables', value: 'fruits-vegetables' }
+    ];
   }
 
-  /**
-   * Populates the main category dropdown.
-   */
-  populateMainCategories(): void {
-    this.mainCategories = Object.keys(this.productHierarchy).map((key) => ({
-      label: this.productHierarchy[key].label,
-      value: key,
-    }));
-  }
-
-  /**
-   * Handles change event for the main category dropdown.
-   * Populates sub-categories and resets subsequent selections.
-   */
   onMainCategoryChange(): void {
-    this.selectedSubCategory = '';
-    this.selectedProductType = '';
-    this.selectedDetails = '';
-    this.subCategories = [];
-    this.productTypes = [];
-    this.detailsOptions = [];
-
-    const selectedCategory = this.productHierarchy[this.selectedMainCategory];
-    if (selectedCategory && selectedCategory.subCategories) {
-      this.subCategories = Object.keys(selectedCategory.subCategories).map(
-        (key) => ({
-          label: selectedCategory.subCategories![key].label,
-          value: key,
-        })
-      );
-    }
+    this.subCategories = [
+      { label: 'Fruits', value: 'fruits' },
+      { label: 'Vegetables', value: 'vegetables' }
+    ];
   }
 
-  /**
-   * Handles change event for the sub-category dropdown.
-   * Populates product types and resets subsequent selections.
-   */
   onSubCategoryChange(): void {
-    this.selectedProductType = '';
-    this.selectedDetails = '';
-    this.productTypes = [];
-    this.detailsOptions = [];
-
-    const selectedCategory = this.productHierarchy[this.selectedMainCategory];
-    const selectedSubCategory =
-      selectedCategory?.subCategories?.[this.selectedSubCategory];
-
-    if (selectedSubCategory && selectedSubCategory.productTypes) {
-      this.productTypes = Object.keys(selectedSubCategory.productTypes).map(
-        (key) => ({
-          label: selectedSubCategory.productTypes![key].label,
-          value: key,
-        })
-      );
-    }
+    this.productTypes = [
+      { label: 'Mango', value: 'mango' },
+      { label: 'Tomato', value: 'tomato' }
+    ];
   }
 
-  /**
-   * Handles change event for the product type dropdown.
-   * Populates details options.
-   */
   onProductTypeChange(): void {
-    this.selectedDetails = '';
-    this.detailsOptions = [];
-
-    const selectedCategory = this.productHierarchy[this.selectedMainCategory];
-    const selectedSubCategory =
-      selectedCategory?.subCategories?.[this.selectedSubCategory];
-    const selectedProductType =
-      selectedSubCategory?.productTypes?.[this.selectedProductType];
-
-    if (selectedProductType && selectedProductType.details) {
-      this.detailsOptions = Object.keys(selectedProductType.details).map(
-        (key) => ({
-          label: selectedProductType.details![key],
-          value: key,
-        })
-      );
-    }
+    this.detailsOptions = [
+      { label: 'Slices', value: 'slices' },
+      { label: 'Powder', value: 'powder' }
+    ];
   }
 
-  /**
-   * Helper function to get the label for a given value from an options array.
-   * @param options Array of DropdownOption.
-   * @param value The value to find the label for.
-   * @returns The label string or the value itself if not found.
-   */
   getLabel(options: DropdownOption[], value: string): string {
-    const found = options.find((option) => option.value === value);
+    const found = options.find(option => option.value === value);
     return found ? found.label : value;
   }
 
-  /**
-   * Handles form submission.
-   * Logs all selected values.
-   */
   onSubmit(): void {
-    const submissionData = {
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString(),
-      mainCategory: this.selectedMainCategory,
-      subCategory: this.selectedSubCategory,
-      productType: this.selectedProductType,
-      details: this.selectedDetails,
-      buyer: this.buyerData,
-      status: 'pending'
-    };
-    
-    console.log('Buyer Inquiry Submitted:', submissionData);
-    // In a real application, send submissionData to your backend API
-    alert('Your buyer inquiry has been submitted! Check console for details.');
-    this.resetForm();
-  }
-
-  /**
-   * Resets all form selections.
-   */
-  resetForm(): void {
-    this.selectedMainCategory = '';
-    this.selectedSubCategory = '';
-    this.selectedProductType = '';
-    this.selectedDetails = '';
-    this.buyerData = { name: '', email: '', phone: '', quantity: '' };
-    this.subCategories = [];
-    this.productTypes = [];
-    this.detailsOptions = [];
+    console.log('Buyer inquiry submitted');
+    alert('Inquiry submitted successfully!');
   }
 }

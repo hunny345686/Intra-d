@@ -7,18 +7,19 @@ import {
 } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
 export class NavbarComponent {
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, public authService: AuthService) {}
 
   ngOnInit(): void {
     // Optional: Subscribe to router events to perform actions on navigation changes
@@ -73,5 +74,9 @@ export class NavbarComponent {
     // Logout and navigate to homepage
     this.authService.logout();
     this.router.navigate(['/homepage']);
+  }
+
+  isControlPage(): boolean {
+    return this.router.url === '/control';
   }
 }

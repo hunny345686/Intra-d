@@ -1,20 +1,19 @@
-// src/app/homepage/homepage.component.ts
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, timeout, retry } from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-// Import components and services
 import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 
-// To interact with Bootstrap Modals via JS
 declare var bootstrap: any;
 
-// Interfaces for form data
 interface SignupFormData {
   name: string;
   typicalCrops: string;
@@ -24,207 +23,298 @@ interface SignupFormData {
   soilTest: string;
   mobileNo: string;
   soilType: string;
-  acreOfLand: number | null; // Changed to number
+  acreOfLand: number | null;
   fertilizers: string;
   role: string;
+}
+
+interface WeatherData {
+  location: string;
+  temperature: number | string;
+  description: string;
+  humidity: number | string;
+  windSpeed: number | string;
 }
 
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-
-    ServiceInfoComponent,
-    LoginComponent,
-  ],
+  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, LoginComponent],
   templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.css'],
+  styleUrls: ['./homepage.component.css']
 })
-export class HomepageComponent implements OnInit {
-  isLoggedIn: boolean = false;
+export class HomepageComponent implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
+  private readonly API_TIMEOUT = 10000;
+  private readonly MAX_RETRIES = 2;
+  
+  isLoggedIn = false;
   currentUser: User | null = null;
-
-  // Signup form data
-  signupData: SignupFormData = {
-    name: '',
-    typicalCrops: '',
-    village: '',
-    waterSource: '',
-    mandal: '',
-    soilTest: '',
-    mobileNo: '',
-    soilType: '',
-    acreOfLand: null,
-    fertilizers: '',
-    role: '',
+  selectedFeature = '';
+  weatherData: WeatherData | null = null;
+  
+  readonly farmersData = {
+    totalFarmers: 1250,
+    activeFarmers: 980,
+    newThisMonth: 45
   };
+
+  signupData: SignupFormData = {
+    name: '', typicalCrops: '', village: '', waterSource: '',
+    mandal: '', soilTest: '', mobileNo: '', soilType: '',
+    acreOfLand: null, fertilizers: '', role: ''
+  };
+
   @ViewChild('signupForm') signupHtmlForm!: NgForm;
 
-  private apiKey = '93e63dcc1fb38ed986a59514d85dbbd1';
-  private apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
+  private readonly apiKey = '93e63dcc1fb38ed986a59514d85dbbd1';
+  private readonly apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
   constructor(
-    private authService: AuthService, 
-    private http: HttpClient,
-    private firebaseService: FirebaseService
-  ) {}
+    private readonly authService: AuthService,
+    private readonly http: HttpClient,
+    private readonly firebaseService: FirebaseService
+  ) {
+    console.log('HomepageComponent initialized');
+  }
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe((user) => {
-      this.currentUser = user;
-      this.isLoggedIn = !!user;
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          this.isLoggedIn = !!user;
+          console.log('User state updated:', { isLoggedIn: this.isLoggedIn });
+        },
+        error: (error) => {
+          console.error('Error in user subscription:', error);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    console.log('HomepageComponent destroyed');
   }
 
   onLoginSuccess(): void {
-    // Login state is handled by the auth service subscription
+    console.log('Login successful');
   }
 
   handleLogout(): void {
     this.authService.logout();
+    console.log('User logged out');
   }
-
-  selectedFeature = '';
-  weatherData: any = null;
-  farmersData = {
-    totalFarmers: 1250,
-    activeFarmers: 980,
-    newThisMonth: 45,
-  };
 
   setComingSoonFeature(feature: string): void {
-    this.selectedFeature = feature;
+    this.selectedFeature = feature.replace(/[<>]/g, '').trim();
+    console.log('Feature selected:', this.selectedFeature);
   }
 
-  /**
-   * Prompts the user for their current location and returns the coordinates.
-   * Uses a Promise to handle asynchronous geolocation API calls.
-   */
-  getCurrentLocation(): Promise<{ lat: number; lon: number }> {
+  private getCurrentLocation(): Promise<{ lat: number; lon: number }> {
     return new Promise((resolve, reject) => {
-      if ('geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            resolve({
-              lat: position.coords.latitude,
-              lon: position.coords.longitude,
-            });
-          },
-          (error) => {
-            // Reject the promise if geolocation fails
-            reject(error);
-          }
-        );
-      } else {
-        // Reject the promise if geolocation is not supported
-        reject(new Error('Geolocation is not supported by this browser.'));
+      if (!('geolocation' in navigator)) {
+        console.error('Geolocation not supported by browser');
+        reject(new Error('Geolocation not supported'));
+        return;
       }
+
+      const timeoutId = setTimeout(() => {
+        reject(new Error('Geolocation timeout'));
+      }, 10000);
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          clearTimeout(timeoutId);
+          const coords = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          };
+          console.log('Location obtained:', coords);
+          resolve(coords);
+        },
+        (error) => {
+          clearTimeout(timeoutId);
+          console.error('Geolocation error:', error);
+          reject(error);
+        },
+        { timeout: 10000, enableHighAccuracy: false }
+      );
     });
   }
 
   async showWeather(): Promise<void> {
     try {
+      console.log('Fetching weather data');
       const { lat, lon } = await this.getCurrentLocation();
+      
+      if (Math.abs(lat) > 90 || Math.abs(lon) > 180) {
+        throw new Error('Invalid coordinates');
+      }
+
       const requestUrl = `${this.apiUrl}?lat=${lat}&lon=${lon}&appid=${this.apiKey}&units=metric`;
 
-      this.http.get(requestUrl).subscribe({
-        next: (data: any) => {
-          this.weatherData = {
-            location: data.name,
-            temperature: Math.round(data.main.temp),
-            description: data.weather[0].description,
-            humidity: data.main.humidity,
-            windSpeed: data.wind.speed,
-          };
-          this.selectedFeature = 'Weather';
-
-          const weatherModal = document.getElementById('weatherModal');
-          if (weatherModal) {
-            const modal =
-              bootstrap.Modal.getInstance(weatherModal) ||
-              new bootstrap.Modal(weatherModal);
-            modal.show();
+      this.http.get(requestUrl)
+        .pipe(
+          timeout(this.API_TIMEOUT),
+          retry(this.MAX_RETRIES),
+          catchError((error: HttpErrorResponse) => {
+            console.error('Weather API error:', error);
+            return of(null);
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe({
+          next: (data: any) => {
+            if (data) {
+              this.weatherData = {
+                location: (data.name || 'Unknown').replace(/[<>]/g, ''),
+                temperature: Math.round(data.main?.temp || 0),
+                description: (data.weather?.[0]?.description || 'No data').replace(/[<>]/g, ''),
+                humidity: data.main?.humidity || 'N/A',
+                windSpeed: data.wind?.speed || 'N/A'
+              };
+              this.selectedFeature = 'Weather';
+              this.showModal('weatherModal');
+              console.log('Weather data loaded successfully');
+            } else {
+              this.showErrorModal('Weather service unavailable');
+            }
+          },
+          error: (error) => {
+            console.error('Weather subscription error:', error);
+            this.showErrorModal('Error fetching weather data');
           }
-        },
-        error: (error) => {
-          console.error('Error fetching weather data:', error);
-          this.showErrorModal('Error fetching weather data.');
-        },
-      });
-    } catch (error: any) {
-      console.error('Geolocation error:', error);
-      this.showErrorModal(
-        'Could not get your location. Please enable location services in your browser.'
-      );
+        });
+    } catch (error) {
+      console.error('Weather fetch error:', error);
+      this.showErrorModal('Could not get location. Please enable location services.');
     }
   }
 
-  // Helper function to show a generic error modal
   private showErrorModal(message: string): void {
+    const sanitizedMessage = message.replace(/[<>]/g, '').trim();
     this.weatherData = {
       location: 'Error',
       temperature: 'N/A',
-      description: message,
+      description: sanitizedMessage,
       humidity: 'N/A',
-      windSpeed: 'N/A',
+      windSpeed: 'N/A'
     };
     this.selectedFeature = 'Weather';
-    const weatherModal = document.getElementById('weatherModal');
-    if (weatherModal) {
-      const modal =
-        bootstrap.Modal.getInstance(weatherModal) ||
-        new bootstrap.Modal(weatherModal);
-      modal.show();
+    this.showModal('weatherModal');
+    console.warn('Error modal shown:', sanitizedMessage);
+  }
+
+  private showModal(modalId: string): void {
+    try {
+      const modalElement = document.getElementById(modalId);
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        modal.show();
+        console.log('Modal shown:', modalId);
+      }
+    } catch (error) {
+      console.error('Modal show error:', error);
     }
   }
 
   showFarmers(): void {
-    const farmersModal = document.getElementById('farmersModal');
-    if (farmersModal) {
-      const modal =
-        bootstrap.Modal.getInstance(farmersModal) ||
-        new bootstrap.Modal(farmersModal);
-      modal.show();
-    }
+    this.showModal('farmersModal');
+    console.log('Farmers modal displayed');
   }
+
   handleSignup(): void {
     if (this.signupHtmlForm.invalid) {
+      console.warn('Invalid signup form submission');
       return;
     }
 
-    this.firebaseService.createUser(this.signupData).subscribe({
-      next: (response) => {
-        console.log('User created successfully:', response);
-        
-        // Hide signup modal
-        const signupModalElement = document.getElementById('signupModal');
-        if (signupModalElement) {
-          const signupModal = bootstrap.Modal.getInstance(signupModalElement) || new bootstrap.Modal(signupModalElement);
-          signupModal.hide();
-        }
+    const sanitizedData = {
+      ...this.signupData,
+      name: this.signupData.name.replace(/[<>]/g, '').trim(),
+      village: this.signupData.village.replace(/[<>]/g, '').trim(),
+      mandal: this.signupData.mandal.replace(/[<>]/g, '').trim(),
+      mobileNo: this.signupData.mobileNo.replace(/[<>]/g, '').trim()
+    };
 
-        // Show success modal with credentials
-        const successModalElement = document.getElementById('successModal');
-        if (successModalElement) {
-          const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
-          document.getElementById('successModalLabel')!.textContent = 'Registration Successful';
-          (document.querySelector('#successModal .modal-body') as HTMLElement).innerHTML = 
-            `<p>Your account has been created successfully!</p>
-             <p><strong>Email:</strong> ${this.signupData.name.toLowerCase().replace(/\s+/g, '')}@intra-d.com</p>
-             <p><strong>Password:</strong> ${response.generatedPassword}</p>
-             <p>Please save these credentials for future login.</p>`;
-          successModal.show();
+    const phoneRegex = /^[+]?[\d\s\-()]{10,15}$/;
+    if (!phoneRegex.test(sanitizedData.mobileNo)) {
+      console.warn('Invalid phone number in signup');
+      alert('Please enter a valid phone number');
+      return;
+    }
+
+    console.log('Processing user signup');
+    
+    this.firebaseService.createUser(sanitizedData)
+      .pipe(
+        timeout(this.API_TIMEOUT),
+        catchError((error) => {
+          console.error('Signup error:', error);
+          return of(null);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            console.log('User created successfully');
+            this.hideModal('signupModal');
+            this.showSuccessModal(sanitizedData.name, response.generatedPassword);
+            this.signupHtmlForm.resetForm();
+          } else {
+            alert('Registration failed. Please try again.');
+          }
+        },
+        error: (error) => {
+          console.error('Signup subscription error:', error);
+          alert('Registration failed. Please try again.');
+        }
+      });
+  }
+
+  private hideModal(modalId: string): void {
+    try {
+      const modalElement = document.getElementById(modalId);
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+        modal.hide();
+        console.log('Modal hidden:', modalId);
+      }
+    } catch (error) {
+      console.error('Modal hide error:', error);
+    }
+  }
+
+  private showSuccessModal(name: string, password: string): void {
+    try {
+      const successModalElement = document.getElementById('successModal');
+      if (successModalElement) {
+        const sanitizedName = name.replace(/[<>]/g, '').trim();
+        const email = `${sanitizedName.toLowerCase().replace(/\s+/g, '')}@intra-d.com`;
+        
+        const labelElement = document.getElementById('successModalLabel');
+        const bodyElement = document.querySelector('#successModal .modal-body') as HTMLElement;
+        
+        if (labelElement) labelElement.textContent = 'Registration Successful';
+        if (bodyElement) {
+          bodyElement.innerHTML = `
+            <p>Your account has been created successfully!</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Password:</strong> ${password}</p>
+            <p>Please save these credentials for future login.</p>
+          `;
         }
         
-        this.signupHtmlForm.resetForm();
-      },
-      error: (error) => {
-        console.error('Error creating user:', error);
-        alert('Registration failed. Please try again.');
+        const modal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
+        modal.show();
+        console.log('Success modal shown for user registration');
       }
-    });
+    } catch (error) {
+      console.error('Success modal error:', error);
+    }
   }
 }
