@@ -1,178 +1,83 @@
-<div class="soil-test-container">
-    <!-- Benefits of Farmers Section -->
-    <div class="row mt-4 mb-5">
-        <div class="col-md-3">
-            <div class="nav flex-column nav-pills vertical card-modern p-3" id="v-pills-tab" role="tablist"
-                aria-orientation="vertical">
-                <button class="nav-link active rounded-modern mb-2 fw-medium" id="benifit-tab" data-bs-toggle="pill"
-                    data-bs-target="#benifit" type="button" role="tab" aria-controls="benifit" aria-selected="true">
-                    <i class="fas fa-handshake me-2"></i>Benefits of Farmers
-                </button>
-                <button class="nav-link rounded-modern mb-2 fw-medium" id="v-pills-rent-tab" data-bs-toggle="pill"
-                    data-bs-target="#v-pills-rent" type="button" role="tab" aria-controls="v-pills-rent"
-                    aria-selected="false">
-                    <i class="fas fa-tractor me-2"></i>Book a Soil Test
+<!-- Tabs -->
+<div class="tabs">
+    <button class="tab active">Advantages</button>
+    <button class="tab">How to Test</button>
+</div>
 
-                </button>
+<!-- Main Layout -->
+<div class="container">
+
+    <!-- Left Section -->
+    <section class="left-panel">
+        <h2>Benefits of Soil Testing</h2>
+
+        <div class="card-grid">
+            <div class="info-card">
+                <h3>🌾 Balanced Nutrients</h3>
+                <p>Ensures correct NPK balance for crops.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>💰 Saves Fertilizer Cost</h3>
+                <p>Use only required fertilizers.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>📈 Better Yield</h3>
+                <p>Healthy soil improves crop production.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>🔍 Identify Soil Problems</h3>
+                <p>Detect pH imbalance & deficiencies early.</p>
+            </div>
+            <div class="info-card">
+                <h3>📈 Better Yield</h3>
+                <p>Healthy soil improves crop production.</p>
+            </div>
+
+            <div class="info-card">
+                <h3>🔍 Identify Soil Problems</h3>
+                <p>Detect pH imbalance & deficiencies early.</p>
             </div>
         </div>
-        <div class="col-md-9">
-            <div class="tab-content" id="v-pills-tabContent">
-                <!-- Benefits of Farmers Tab Content -->
-                <div class="tab-pane fade show active" id="benifit" role="tabpanel" aria-labelledby="benifit-tab">
-                    <div class="benefits-section mb-5 p-4 rounded-container-large shadow-md">
-                        <h2 class="text-white text-center mb-4 display-6 fw-bold">Benefits of Farmers</h2>
-                        <div class="row text-center g-4">
-                            <div class="col-md-4 col-sm-6">
-                                <div class="benefit-item text-white">
-                                    <ul>
-                                        <li>Increased Productivity</li>
-                                        <li> Savings on Fertilizer Spend</li>
-                                        <li>Accurate soil analysis</li>
-                                    </ul>
-                                </div>
-                            </div>
+    </section>
 
-                            <div class="col-md-4 col-sm-6">
-                                <div class="benefit-item text-white">
-                                    <ul>
-                                        <li>Tailored Fertilizer Recommendation</li>
-                                        <li>Soil Health Improvement</li>
-                                        <li>Expert Support</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <div class="benefit-item text-white">
-                                    <ul>
-                                        <li>Crop-Specific Fertilizer Implementation Schedule</li>
-                                        <li>Fast Results</li>
-                                        <li>Convenient Process</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Right Section -->
+    <section class="right-panel">
+        <h2>Request Soil Test</h2>
 
-                <!-- Equipment Rent Tab Content (Book a Soil Test form) -->
-                <div class="tab-pane fade" id="v-pills-rent" role="tabpanel" aria-labelledby="v-pills-rent-tab">
-                    <!-- Book a Soil Test -->
-                    <div class="row text-center mb-4">
-                        <div class="col-12">
-                            <h1 class="display-5 fw-bold text-dark-green mb-3">Book a Soil Test</h1>
-                            <p class="lead text-muted-dark mx-auto px-3">Get Membership of Green Revolution 2.0
-                                "Healthy Soil, Healthy People" Movement</p>
-                        </div>
-                    </div>
-                    <form onsubmit="event.preventDefault(); alert('Form submitted! (This is a static preview)');"
-                        class="bookSoilForm">
-                        <div class="row g-3 mb-4">
-                            <!-- First Name -->
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label visually-hidden">First name</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm" id="firstName"
-                                    placeholder="Enter your first name" required>
-                            </div>
-                            <!-- Last Name -->
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label visually-hidden">Last name</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm" id="lastName"
-                                    placeholder="Enter your last name" required>
-                            </div>
-                            <!-- Email -->
-                            <div class="col-md-6">
-                                <label for="email" class="form-label visually-hidden">Email</label>
-                                <input type="email" class="form-control form-control-custom shadow-sm" id="email"
-                                    placeholder="abc@gmail.com" required>
-                            </div>
-                            <!-- Phone -->
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label visually-hidden">Phone</label>
-                                <input type="tel" class="form-control form-control-custom shadow-sm" id="phone"
-                                    placeholder="Add your mobile no" required>
-                            </div>
-                        </div>
+        <form class="soil-form">
+            <label>Farm Location</label>
+            <select>
+                <option>Select Village / Area</option>
+                <option>Village A</option>
+                <option>Village B</option>
+            </select>
 
-                        <div class="row g-3 mb-4">
-                            <!-- Street Address 1 -->
-                            <div class="col-12">
-                                <label for="streetAddress1" class="form-label fw-semibold text-dark-green-label">Street
-                                    Address
-                                    *</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm"
-                                    id="streetAddress1" placeholder="Street Address" required>
-                            </div>
-                            <!-- Street Address 2 -->
-                            <div class="col-12">
-                                <label for="streetAddress2" class="form-label visually-hidden">Street Address Line
-                                    2</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm"
-                                    id="streetAddress2" placeholder="Street Address Line 2">
-                            </div>
-                        </div>
+            <label>Crop Type</label>
+            <select>
+                <option>Select Crop</option>
+                <option>Rice</option>
+                <option>Wheat</option>
+                <option>Maize</option>
+            </select>
 
-                        <div class="row g-3 mb-5">
-                            <!-- City -->
-                            <div class="col-md-6">
-                                <label for="city" class="form-label fw-semibold text-dark-green-label">City *</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm" id="city"
-                                    placeholder="City" required>
-                            </div>
-                            <!-- Region/State/Province -->
-                            <div class="col-md-6">
-                                <label for="region"
-                                    class="form-label fw-semibold text-dark-green-label">Region/State/Province
-                                    *</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm" id="region"
-                                    placeholder="Region/State/Province" required>
-                            </div>
-                            <!-- Postal / Zip code -->
-                            <div class="col-md-6">
-                                <label for="postalCode" class="form-label fw-semibold text-dark-green-label">Postal /
-                                    Zip
-                                    code
-                                    *</label>
-                                <input type="text" class="form-control form-control-custom shadow-sm" id="postalCode"
-                                    placeholder="Postal / Zip code" required>
-                            </div>
-                            <!-- Country -->
-                            <div class="col-md-6">
-                                <label for="country" class="form-label fw-semibold text-dark-green-label">Country
-                                    *</label>
-                                <select class="form-select form-control-custom shadow-sm" id="country" required>
-                                    <option value="" disabled selected>Country</option>
-                                    <option value="United States">United States</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="India">India</option>
-                                    <!-- Add more countries as needed for static preview -->
-                                </select>
-                            </div>
-                        </div>
+            <label>Soil Type</label>
+            <select>
+                <option>Select Soil Type</option>
+                <option>Loamy</option>
+                <option>Clay</option>
+                <option>Sandy</option>
+            </select>
 
-                        <!-- Special Instructions -->
-                        <div class="row g-3 mb-5">
-                            <div class="col-12">
-                                <label for="specialInstructions"
-                                    class="form-label fw-semibold text-dark-green-label">Special
-                                    instructions</label>
-                                <textarea class="form-control form-control-custom-textarea shadow-sm"
-                                    id="specialInstructions" rows="5"></textarea>
-                            </div>
-                        </div>
+            <label>Last Crop Grown</label>
+            <input type="text" placeholder="Enter previous crop" />
 
-                        <!-- Submit Button -->
-                        <div class="row justify-content-center">
-                            <div class="col-auto">
-                                <button type="submit"
-                                    class="btn btn-submit-green btn-lg shadow-sm px-5 py-3 rounded-pill">
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+            <label>Problem (Optional)</label>
+            <textarea placeholder="Describe soil issue..."></textarea>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </section>
 </div>

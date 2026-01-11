@@ -36,7 +36,7 @@ export class AboutUsComponent {
     {
       name: 'Singamala Siva Prasad',
       role: 'Director',
-      imageUrl: 'https://placehold.co/500x500?text=SivaPrasad',
+      imageUrl: 'assets/images/siva.png',
     },
   ];
 

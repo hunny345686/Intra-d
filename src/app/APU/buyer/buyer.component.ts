@@ -102,27 +102,39 @@ export class BuyerComponent implements OnInit {
         },
       },
     },
-    cereals: {
-      label: 'Cereals',
-      subCategories: {
-        wheat: {
-          label: 'Wheat',
-          // productTypes: {
-          //   flour: 'Flour',
-          //   grains: 'Grains',
-          // },
-        },
-      },
-    },
-    pulses: {
-      label: 'Pulses',
+    // cereals: {
+    //   label: 'Cereals',
+    //   subCategories: {
+    //     wheat: {
+    //       label: 'Wheat',
+    //       // productTypes: {
+    //       //   flour: 'Flour',
+    //       //   grains: 'Grains',
+    //       // },
+    //     },
+    //   },
+    // },
+    // pulses: {
+    //   label: 'Pulses',
+    //   subCategories: {
+    //     lentils: {
+    //       label: 'Lentils',
+    //       // productTypes: {
+    //       //   whole: 'Whole',
+    //       //   split: 'Split',
+    //       // },
+    //     },
+    //   },
+    // },
+    RawVegetablesFurits: {
+      label: 'Raw Vegetables & Furits',
       subCategories: {
         lentils: {
           label: 'Lentils',
-          // productTypes: {
-          //   whole: 'Whole',
-          //   split: 'Split',
-          // },
+          productTypes: {
+            // whole: 'Whole',
+            // split: 'Split',
+          },
         },
       },
     },
@@ -145,7 +157,7 @@ export class BuyerComponent implements OnInit {
     name: '',
     email: '',
     phone: '',
-    quantity: ''
+    quantity: '',
   };
 
   constructor() {}
@@ -259,9 +271,9 @@ export class BuyerComponent implements OnInit {
       productType: this.selectedProductType,
       details: this.selectedDetails,
       buyer: this.buyerData,
-      status: 'pending'
+      status: 'pending',
     };
-    
+
     console.log('Buyer Inquiry Submitted:', submissionData);
     // In a real application, send submissionData to your backend API
     alert('Your buyer inquiry has been submitted! Check console for details.');
