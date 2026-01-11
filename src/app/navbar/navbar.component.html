@@ -1,8 +1,11 @@
 <nav class="navbar navbar-expand-lg shadow-modern p-3">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center fw-bold" [routerLink]="['/']" style="cursor: pointer;">
-            <img src="assets/images/intrad new logo.png" alt="Intra-d Logo" class="me-2">
-            <span class="text-primary-green" style="font-size: 1.5rem;">INTRA-D</span>
+            <img src="assets/images/logo.jpg" alt="Intra-d Logo" class="me-2" width="80">
+            <div class="d-flex align-items-center flex-column">
+                <span class="text-primary-green" style="font-size: 1.5rem;">INTRA-D</span>
+                <span class="text-primary-green" style="font-size: .8rem;">Agricultural & Processing</span>
+            </div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#homepageNavbar"
             aria-controls="homepageNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -12,18 +15,17 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active"
                     [routerLinkActiveOptions]="{exact: true}">
-                    <a (click)="onHomeClick($event)"
-                        class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium" href="#"
-                        style="cursor: pointer;"><i class="fas fa-home me-2"></i>Home</a>
+                    <a (click)="onHomeClick($event)" class="nav-link btn btn-outline-primary rounded-modern fw-medium"
+                        href="#" style="cursor: pointer;"><i class="fas fa-home me-2"></i>Home</a>
                 </li>
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium"
-                        [routerLink]="['/career']"><i class="fas fa-briefcase me-2"></i>We Hire</a>
+                    <a class="nav-link btn btn-outline-primary rounded-modern fw-medium" [routerLink]="['/career']"><i
+                            class="fas fa-briefcase me-2"></i>We Hire</a>
                 </li>
                 <!-- Crops Dropdown -->
                 <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
                     [class.active]="isDropdownActive('/crops') || isDropdownActive('/bookfield')">
-                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 dropdown-toggle fw-medium"
+                    <a class="nav-link btn btn-outline-primary rounded-modern dropdown-toggle fw-medium"
                         id="navbarCropsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                         style="cursor: pointer;">
                         <i class="fas fa-leaf me-2"></i>Crops
@@ -46,14 +48,14 @@
                 </li>
 
                 <li class=" nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a [routerLink]="['/about']"
-                        class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium" href="#">
+                    <a [routerLink]="['/about']" class="nav-link btn btn-outline-primary rounded-modern fw-medium"
+                        href="#">
                         <i class="fas fa-info-circle me-2"></i>About Us</a>
                 </li>
                 <!-- Book Dropdown -->
                 <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
                     [class.active]="isDropdownActive('/booksoil') || isDropdownActive('/bookfield')">
-                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 dropdown-toggle fw-medium"
+                    <a class="nav-link btn btn-outline-primary rounded-modern dropdown-toggle fw-medium"
                         id="navbarBookDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                         style="cursor: pointer;">
                         <i class="fas fa-calendar-check me-2"></i>Book
@@ -67,15 +69,15 @@
                     </ul>
                 </li>
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
-                    <a class="nav-link btn btn-outline-primary rounded-modern px-4 py-2 fw-medium"
-                        [routerLink]="['/contact']" href="#"><i class="fas fa-envelope me-2"></i>Contact Us</a>
+                    <a class="nav-link btn btn-outline-primary rounded-modern fw-medium" [routerLink]="['/contact']"
+                        href="#"><i class="fas fa-envelope me-2"></i>Contact Us</a>
                 </li>
                 <li class="nav-item me-2 mb-2 mb-lg-0" *ngIf="authService.isAuthenticated()" routerLinkActive="active">
                     <a class="nav-link btn btn-outline-success rounded-modern px-4 py-2 fw-medium"
                         [routerLink]="['/profile']" href="#"><i class="fas fa-user me-2"></i>Profile</a>
                 </li>
                 <li class="nav-item d-none" id="logoutNavItem">
-                    <button class="nav-link btn btn-danger rounded-lg-custom px-4 py-2" id="logoutBtn">Logout</button>
+                    <button class="nav-link btn btn-danger rounded-lg-custom" id="logoutBtn">Logout</button>
                 </li>
             </ul>
         </div>
