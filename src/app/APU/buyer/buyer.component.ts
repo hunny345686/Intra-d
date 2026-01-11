@@ -18,7 +18,7 @@ interface DropdownOption {
 })
 export class BuyerComponent implements OnInit {
   // Data structure for all dropdowns
-  productHierarchy: ProductData = {
+  productHierarchy = {
     'fruits-vegetables': {
       label: 'Fruits & Vegetables',
       subCategories: {
