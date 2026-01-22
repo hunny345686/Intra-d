@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+type ViewType = 'control' | 'admin';
+
 interface AppCard {
   id: string;
   title: string;
@@ -19,68 +21,22 @@ interface AppCard {
   selector: 'app-control',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="control-container">
-      <div class="header">
-        <h1>Intrad Multi-App Control Center</h1>
-        <div class="user-info" *ngIf="currentUser">
-          <span>{{currentUser.email}} ({{currentUser.role}})</span>
-          <button (click)="logout()" class="logout-btn">Logout</button>
-        </div>
-      </div>
-      
-      <div *ngIf="!currentUser" class="login-prompt">
-        <h2>Access Control System</h2>
-        <p>Please login to access the multi-app dashboard</p>
-        <button (click)="goToLogin()" class="login-btn">Login to Continue</button>
-      </div>
-      
-      <div *ngIf="currentUser" class="app-grid">
-        <div 
-          *ngFor="let app of availableApps" 
-          class="app-card"
-          [class]="app.id + '-card'">
-          <div class="app-icon">{{app.icon}}</div>
-          <h3>{{app.title}}</h3>
-          <p>{{app.description}}</p>
-          <button 
-            (click)="app.action()" 
-            class="app-btn"
-            [class]="app.buttonClass">
-            {{app.buttonText}}
-          </button>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .control-container { min-height: 100vh; background: #f8f9fa; }
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #343a40; color: white; }
-    .user-info { display: flex; align-items: center; gap: 15px; }
-    .logout-btn { background: #dc3545; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-    .login-prompt { text-align: center; padding: 60px 20px; }
-    .login-btn { background: #007bff; color: white; padding: 15px 30px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; }
-    .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; padding: 40px; max-width: 1200px; margin: 0 auto; }
-    .app-card { background: white; border-radius: 10px; padding: 30px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .app-icon { font-size: 48px; margin-bottom: 20px; }
-    .app-btn { padding: 12px 24px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; margin-top: 15px; }
-    .fpc-btn { background: #28a745; color: white; }
-    .apu-btn { background: #007bff; color: white; }
-    .admin-btn { background: #6f42c1; color: white; }
-  `]
+  templateUrl: './app-control.component.html',
+  styleUrls: ['./app-control.component.css', './admin-dashboard.component.css']
 })
 export class AppControlComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   currentUser: User | null = null;
   availableApps: AppCard[] = [];
+  currentView: ViewType = 'control';
 
   private readonly appConfigs: AppCard[] = [
     {
       id: 'fpc',
-      title: 'FPC System',
+      title: 'Farmer System',
       description: 'Farmer Producer Company Management',
       icon: '🌾',
-      buttonText: 'Launch FPC',
+      buttonText: 'Launch Farmer',
       buttonClass: 'fpc-btn',
       action: () => this.launchApp('fpc')
     },
@@ -100,7 +56,7 @@ export class AppControlComponent implements OnInit, OnDestroy {
       icon: '⚙️',
       buttonText: 'Launch Admin',
       buttonClass: 'admin-btn',
-      action: () => this.launchAdmin()
+      action: () => this.setActiveView('admin')
     }
   ];
 
@@ -121,6 +77,26 @@ export class AppControlComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  setActiveView(view: ViewType): void {
+    this.currentView = view;
+  }
+
+  navigateToFarmers(): void {
+    this.router.navigate(['/seller']);
+  }
+
+  navigateToBuyers(): void {
+    this.router.navigate(['/buyer']);
+  }
+
+  navigateToReports(): void {
+    this.router.navigate(['/report']);
+  }
+
+  goBackToControl(): void {
+    this.setActiveView('control');
   }
 
   private updateAvailableApps(): void {
@@ -153,15 +129,11 @@ export class AppControlComponent implements OnInit, OnDestroy {
         this.router.navigate(['/homepage']);
         break;
       case 'apu':
-        this.router.navigate(['/apu-dashboard']);
+        this.router.navigate(['/apu']);
         break;
       default:
         this.router.navigate([`/${appId}`]);
     }
-  }
-
-  launchAdmin(): void {
-    this.router.navigate(['/admin']);
   }
 
   logout(): void {

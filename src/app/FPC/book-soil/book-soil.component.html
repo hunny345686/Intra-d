@@ -1,12 +1,11 @@
 <!-- Tabs -->
-<div class="tabs">
+<!-- <div class="tabs">
     <button class="tab active">Advantages</button>
-    <button class="tab">How to Test</button>
-</div>
+</div> -->
 
 <!-- Main Layout -->
 <div class="container">
-
+    <!-- <h2>Advantages</h2> -->
     <!-- Left Section -->
     <section class="left-panel">
         <h2>Benefits of Soil Testing</h2>
@@ -31,53 +30,89 @@
                 <h3>🔍 Identify Soil Problems</h3>
                 <p>Detect pH imbalance & deficiencies early.</p>
             </div>
+
             <div class="info-card">
-                <h3>📈 Better Yield</h3>
-                <p>Healthy soil improves crop production.</p>
+                <h3>🌱 Soil Health Improvement</h3>
+                <p>Maintains long-term soil fertility.</p>
             </div>
 
             <div class="info-card">
-                <h3>🔍 Identify Soil Problems</h3>
-                <p>Detect pH imbalance & deficiencies early.</p>
+                <h3>📊 Scientific Farming</h3>
+                <p>Data-driven decisions for better farming.</p>
             </div>
         </div>
     </section>
 
-    <!-- Right Section -->
+    <!-- Right Panel -->
     <section class="right-panel">
-        <h2>Request Soil Test</h2>
-
-        <form class="soil-form">
-            <label>Farm Location</label>
-            <select>
-                <option>Select Village / Area</option>
-                <option>Village A</option>
-                <option>Village B</option>
+        <form class="soil-form" (ngSubmit)="onSubmit()" #soilForm="ngForm">
+            <h2>Request Soil Test</h2>
+    
+            <!-- Farmer Details -->
+             <label>Name</label>
+            <input type="text" name="farmerName" [(ngModel)]="soilTestForm.farmerName" placeholder="Enter farmer name"
+                required />
+    
+            <label>Mobile Number</label>
+            <input type="tel" name="mobileNumber" [(ngModel)]="soilTestForm.mobileNumber" placeholder="Enter mobile number"
+                required />
+    
+            <label>Village / Area</label>
+            <input type="text" name="village" [(ngModel)]="soilTestForm.village" placeholder="Enter village or area"
+                required />
+    
+            <!-- Land & Crop Details -->
+            <label>Land Area (Acres)</label>
+            <input type="number" name="landArea" [(ngModel)]="soilTestForm.landArea" placeholder="Eg: 2.5" step="0.1"
+                min="0" required />
+    
+            <label>Irrigation Type</label>
+            <select name="irrigationType" [(ngModel)]="soilTestForm.irrigationType" required>
+                <option value="">Select Irrigation</option>
+                <option value="rainfed">Rainfed</option>
+                <option value="borewell">Borewell</option>
+                <option value="canal">Canal</option>
+                <option value="drip">Drip</option>
             </select>
-
-            <label>Crop Type</label>
-            <select>
-                <option>Select Crop</option>
-                <option>Rice</option>
-                <option>Wheat</option>
-                <option>Maize</option>
+    
+            <label>Current Crop</label>
+            <select name="currentCrop" [(ngModel)]="soilTestForm.currentCrop" required>
+                <option value="">Select Crop</option>
+                <option value="mango">Mango</option>
+                <option value="papaya">Papaya</option>
+                <option value="tomato">Tomato</option>
+                <option value="vegetables">Vegetables</option>
             </select>
-
-            <label>Soil Type</label>
-            <select>
-                <option>Select Soil Type</option>
-                <option>Loamy</option>
-                <option>Clay</option>
-                <option>Sandy</option>
+    
+            <label>Previous Crop</label>
+            <input type="text" name="previousCrop" [(ngModel)]="soilTestForm.previousCrop"
+                placeholder="Enter previous crop" />
+    
+            <!-- Soil Sample Details -->
+            <label>Soil Sample Date</label>
+            <input type="date" name="sampleDate" [(ngModel)]="soilTestForm.sampleDate" required />
+    
+            <label>Soil Sample Depth</label>
+            <select name="sampleDepth" [(ngModel)]="soilTestForm.sampleDepth">
+                <option value="0_15">0–15 cm</option>
+                <option value="15_30">15–30 cm</option>
             </select>
-
-            <label>Last Crop Grown</label>
-            <input type="text" placeholder="Enter previous crop" />
-
+    
+            <label>Field Condition</label>
+            <select name="fieldCondition" [(ngModel)]="soilTestForm.fieldCondition">
+                <option value="dry">Dry</option>
+                <option value="moist">Moist</option>
+                <option value="wet">Wet</option>
+            </select>
+    
             <label>Problem (Optional)</label>
-            <textarea placeholder="Describe soil issue..."></textarea>
-
-            <button type="submit">Submit Request</button>
+            <textarea name="problemDescription" [(ngModel)]="soilTestForm.problemDescription"
+                placeholder="Describe soil issue..."></textarea>
+    
+            <button type="submit" [disabled]="soilForm.invalid">
+                Submit Soil Test Request
+            </button>
         </form>
     </section>
+
 </div>

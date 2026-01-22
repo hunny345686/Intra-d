@@ -54,9 +54,9 @@ export class HomepageComponent implements OnInit, OnDestroy {
   weatherData: WeatherData | null = null;
   
   readonly farmersData = {
-    totalFarmers: 1250,
-    activeFarmers: 980,
-    newThisMonth: 45
+    totalFarmers: 0,
+    activeFarmers: 0,
+    newThisMonth: 0
   };
 
   signupData: SignupFormData = {
@@ -89,6 +89,35 @@ export class HomepageComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error in user subscription:', error);
+        }
+      });
+    
+    this.loadFarmersData();
+  }
+
+  private loadFarmersData(): void {
+    this.firebaseService.getAllUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (users) => {
+          if (users) {
+            let farmerCount = 0;
+            for (const userId in users) {
+              const userContainer = users[userId];
+              for (const firebaseKey in userContainer) {
+                const user = userContainer[firebaseKey];
+                if (user?.role === 'farmer') {
+                  farmerCount++;
+                }
+              }
+            }
+            (this.farmersData as any).totalFarmers = farmerCount;
+            (this.farmersData as any).activeFarmers = farmerCount;
+            (this.farmersData as any).newThisMonth = 0;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading farmers data:', error);
         }
       });
   }

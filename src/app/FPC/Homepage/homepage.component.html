@@ -125,7 +125,7 @@
                                 name="role" required>
                                 <option selected disabled value="">Select your role</option>
                                 <option value="farmer">Farmer</option>
-                                <option value="Buyer /Seller">Buyer / Seller</option>
+                                <option value="user">Buyer / Seller</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
@@ -136,7 +136,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="modalTypicalCrops" class="form-label fw-semibold">Typical Crops:</label>
-                            <select class="form-select rounded-md-custom" id="modalTypicalCrops" name="typicalCrops"
+                            <select class="form-select rounded-md-custom" id="modalTypicalCrops" [(ngModel)]="signupData.typicalCrops" name="typicalCrops"
                                 required>
                                 <option selected disabled value="">Select Crop</option>
                                 <option value="mango">Mango</option>
@@ -159,7 +159,7 @@
                                 [(ngModel)]="signupData.mobileNo" name="mobileNo" placeholder="Enter your mobile number"
                                 pattern="[0-9]{10}" title="Mobile number must be 10 digits" required>
                         </div>
-                        <ng-container *ngIf="signupData.role !== 'Buyer /Seller'">
+                        <ng-container *ngIf="signupData.role !== 'user'">
                             <div class="col-md-6">
                                 <label for="modalVillage" class="form-label fw-semibold">Village:</label>
                                 <input type="text" class="form-control rounded-md-custom" id="modalVillage"

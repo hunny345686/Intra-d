@@ -13,10 +13,9 @@ import { ProductDetailComponent } from './FPC/product-detail/product-detail.comp
 // Dashboard Components
 import { UserDashboardComponent } from './dashboards/user-dashboard.component';
 import { FarmerDashboardComponent } from './dashboards/farmer-dashboard.component';
-import { AdminPortalComponent } from './admin-portal/admin-portal.component';
 import { AppControlComponent } from './app-control/app-control.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { ApuDashboardComponent } from './apu-dashboard/apu-dashboard.component';
+import { ReportComponent } from './report/report.component';
 
 // Guards
 import { RoleGuard } from './guards/role.guard';
@@ -42,21 +41,10 @@ export const routes: Routes = [
     data: { role: 'admin' }
   },
   {
-    path: 'admin',
-    component: AdminPortalComponent,
-    canActivate: [RoleGuard],
-    data: { role: 'admin' }
-  },
-  {
     path: 'buyer',
     component: UserDashboardComponent,
     canActivate: [RoleGuard],
     data: { role: 'user' }
-  },
-  {
-    path: 'apu-dashboard',
-    component: ApuDashboardComponent,
-    canActivate: [AuthGuard]
   },
   {
     path: 'apu',
@@ -67,6 +55,12 @@ export const routes: Routes = [
     component: FarmerDashboardComponent,
     canActivate: [RoleGuard],
     data: { role: 'farmer' }
+  },
+  {
+    path: 'report',
+    component: ReportComponent,
+    canActivate: [RoleGuard],
+    data: { role: 'admin' }
   },
   {
     path: 'profile',

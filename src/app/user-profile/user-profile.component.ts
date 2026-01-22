@@ -134,7 +134,7 @@ export class UserProfileComponent implements OnInit {
       case APP_CONSTANTS.ROLES.USER:
         return '/buyer';
       case APP_CONSTANTS.ROLES.ADMIN:
-        return '/admin';
+        return '/control';
       default:
         return '/';
     }

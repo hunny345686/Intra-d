@@ -1,95 +1,94 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { GeoLocationService } from '../../services/geo-location.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-book-soil',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, HttpClientModule],
   templateUrl: './book-soil.component.html',
   styleUrl: './book-soil.component.css',
 })
 export class BookSoilComponent {
-  // If your component is BookSoilComponent, this should be export class BookSoilComponent
+
+  
+  
   title = 'Soil Test Booking';
 
-  // Model for the form data, initialized with empty strings
-  formData = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    streetAddress1: '',
-    streetAddress2: '',
-    city: '',
-    region: '', // Represents Region/State/Province
-    postalCode: '',
-    country: '',
-    specialInstructions: '',
+  // Soil Test Form Model
+  soilTestForm = {
+    farmerName: '',
+    mobileNumber: '',
+    village: '',
+
+    landArea: null as number | null,
+    irrigationType: '',
+
+    currentCrop: '',
+    previousCrop: '',
+
+    sampleDate: '',
+    sampleDepth: '0_15',
+    fieldCondition: 'dry',
+
+    problemDescription: ''
   };
 
-  // List of countries for the dropdown select element
-  countries: string[] = [
-    'United States',
-    'Canada',
-    'United Kingdom',
-    'Australia',
-    'Germany',
-    'France',
-    'India',
-    'Brazil',
-    'Japan',
-    'China',
-    'Mexico',
-    'South Africa',
-    'Egypt',
-    'Argentina',
-    'New Zealand',
-    'Singapore',
-    'Malaysia',
-    'Indonesia',
-  ];
-
-  constructor() {
-    // Constructor is called when the component is created.
-    // Use it for dependency injection, not heavy logic.
-  }
+  constructor(private geoService: GeoLocationService, private http: HttpClient) {}
 
   /**
-   * Handles the form submission event.
-   * This method is triggered when the form's (ngSubmit) event fires.
-   * It logs the current form data to the console.
-   * In a real-world application, you would typically send this.formData to a backend API.
+   * Handle form submission
    */
-  onSubmit(): void {
-    console.log('Form Submitted!', this.formData);
-    // In a production application, you would send this.formData to a service,
-    // which would then make an HTTP request to your backend.
-    // Example: this.someService.submitSoilTestData(this.formData).subscribe(response => { /* handle response */ });
+async onSubmit() {
+  try {
+    const location = await this.geoService.getCurrentLocation();
 
-    // For demonstration, we'll use a simple alert and then reset the form.
-    alert(
-      'Soil Test Request Submitted! Check your browser console for details.'
-    );
-    this.resetForm(); // Call resetForm to clear the input fields
+    const payload = {
+      ...this.soilTestForm,
+      location,
+      createdAt: new Date().toISOString(),
+      status: 'REQUESTED'
+    };
+
+    this.http.post('https://intra-d-default-rtdb.asia-southeast1.firebasedatabase.app/soilTest.json', payload).subscribe({
+      next: (response) => {
+        console.log('Success:', response);
+        alert('Soil Test Request Submitted with Location');
+        this.resetForm();
+      },
+      error: (error) => {
+        console.error('HTTP Error:', error);
+        alert('Unable to submit request. Please try again.');
+      }
+    });
+
+  } catch (error) {
+    console.error('Location Error:', error);
+    alert('Unable to get location. Please enable GPS.');
   }
+}
+
 
   /**
-   * Resets the form data to its initial empty state.
-   * This clears all the input fields bound by [(ngModel)] after submission.
+   * Reset form after submit
    */
   resetForm(): void {
-    this.formData = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      streetAddress1: '',
-      streetAddress2: '',
-      city: '',
-      region: '',
-      postalCode: '',
-      country: '',
-      specialInstructions: '',
+    this.soilTestForm = {
+      farmerName: '',
+      mobileNumber: '',
+      village: '',
+
+      landArea: null,
+      irrigationType: '',
+
+      currentCrop: '',
+      previousCrop: '',
+
+      sampleDate: '',
+      sampleDepth: '0_15',
+      fieldCondition: 'dry',
+
+      problemDescription: ''
     };
   }
 }

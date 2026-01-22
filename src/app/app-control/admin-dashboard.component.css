@@ -1,0 +1,58 @@
+.sidebar {
+  background-color: #343a40;
+  min-height: 100vh;
+}
+
+.nav-link {
+  color: #adb5bd;
+  padding: 12px 20px;
+  border-radius: 0;
+}
+
+.nav-link:hover, .nav-link.active {
+  background-color: #495057;
+  color: white;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-left: 4px solid #28a745;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+}
+
+.trend-text {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.data-card {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card-header-custom {
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 15px 20px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.urgent-badge {
+  font-size: 0.75rem;
+}
+
+.btn-match {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
