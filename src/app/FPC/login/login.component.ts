@@ -4,11 +4,12 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
+import { TranslatePipe } from '../../shared/translate.pipe';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -48,7 +49,10 @@ export class LoginComponent {
   }
 
   handleLogin(): void {
-    if (!this.loginHtmlForm.valid) return;
+    if (!this.loginHtmlForm.valid) {
+      this.loginHtmlForm.form.markAllAsTouched();
+      return;
+    }
     
     this.isLoading = true;
     this.loginMessage = '';

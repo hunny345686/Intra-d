@@ -11,6 +11,7 @@ import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
+import { TranslatePipe } from '../../shared/translate.pipe';
 
 declare var bootstrap: any;
 
@@ -39,7 +40,7 @@ interface WeatherData {
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, LoginComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, LoginComponent, TranslatePipe],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
@@ -65,7 +66,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
     acreOfLand: null, fertilizers: '', role: ''
   };
 
+  forgotPasswordData = {
+    email: '',
+    password: '',
+    confirmPassword: ''
+  };
+
   @ViewChild('signupForm') signupHtmlForm!: NgForm;
+  @ViewChild('forgotForm') forgotHtmlForm!: NgForm;
 
   private readonly apiKey = '93e63dcc1fb38ed986a59514d85dbbd1';
   private readonly apiUrl = 'https://api.openweathermap.org/data/2.5/weather';
@@ -76,6 +84,14 @@ export class HomepageComponent implements OnInit, OnDestroy {
     private readonly firebaseService: FirebaseService
   ) {
     console.log('HomepageComponent initialized');
+  }
+
+  onPhoneInput(event: any): void {
+    const input = event.target;
+    input.value = input.value.replace(/[^0-9]/g, '');
+    if (input.value.length > 10) {
+      input.value = input.value.slice(0, 10);
+    }
   }
 
   ngOnInit(): void {
@@ -257,6 +273,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   handleSignup(): void {
     if (this.signupHtmlForm.invalid) {
+      this.signupHtmlForm.form.markAllAsTouched();
       console.warn('Invalid signup form submission');
       return;
     }
@@ -345,5 +362,16 @@ export class HomepageComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Success modal error:', error);
     }
+  }
+
+  handleForgotPassword(): void {
+    if (this.forgotHtmlForm.invalid) {
+      console.warn('Invalid forgot password form submission');
+      return;
+    }
+    console.log('Forgot password form submitted');
+    alert('Password reset request submitted!');
+    this.hideModal('forgotPassModal');
+    this.forgotHtmlForm.resetForm();
   }
 }

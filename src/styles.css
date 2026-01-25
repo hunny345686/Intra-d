@@ -1,18 +1,36 @@
-/* Global Styles */
+/* Global Styles - Agricultural Theme */
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-green: #22c55e;
-  --primary-green-dark: #16a34a;
-  --secondary-blue: #7d62e9;
-  --secondary-blue-dark: #2563eb;
-  --accent-orange: #f59e0b;
-  --text-dark: #1f2937;
-  --text-muted: #6b7280;
-  --bg-light: #f8fafc;
-  --border-color: #e5e7eb;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  /* Agricultural Color Palette */
+  --primary-green: #2d5016;        /* Deep forest green */
+  --primary-green-light: #4a7c59;  /* Medium forest green */
+  --primary-green-dark: #1a3009;   /* Dark forest green */
+  --secondary-green: #6b8e23;      /* Olive green */
+  --accent-green: #90ee90;         /* Light green */
+  
+  --earth-brown: #8b4513;          /* Saddle brown */
+  --soil-brown: #a0522d;           /* Sienna */
+  --harvest-gold: #b8860b;         /* Darker golden rod for better contrast */
+  --wheat-yellow: #f5deb3;         /* Wheat */
+  
+  --sky-blue: #4682b4;             /* Steel blue (darker for better contrast) */
+  --water-blue: #2e5984;           /* Darker steel blue */
+  
+  --text-dark: #1a1a1a;            /* Darker text for better contrast */
+  --text-muted: #666666;           /* Darker muted text */
+  --text-light: #ffffff;           /* White text for dark backgrounds */
+  --bg-light: #f8fffe;             /* Off white */
+  --bg-cream: #faf0e6;             /* Linen */
+  
+  --border-color: #d4c5b9;         /* Light brown */
+  --shadow: 0 4px 15px rgba(45, 80, 22, 0.1);
+  --shadow-lg: 0 10px 30px rgba(45, 80, 22, 0.15);
+  
+  /* Typography */
+  --font-primary: 'Poppins', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
 }
 
 * {
@@ -22,101 +40,288 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-primary);
   color: var(--text-dark);
   min-height: 100vh;
-  background: #56d0810f;
+  background: linear-gradient(135deg, #f8fffe 0%, #faf0e6 50%, #f0f8f0 100%);
+  background-attachment: fixed;
+  line-height: 1.6;
+  font-size: 16px;
 }
 
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
+/* Animated Background */
+
+
+/* Remove excessive animations - keep only essential ones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
+/* Remove float and pulse animations */
+
+/* Agricultural Theme Buttons - Minimal animations */
 .btn-primary-green {
-  background: var(--primary-green);
-  border-color: var(--primary-green);
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+  border: none;
   color: white;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  font-family: var(--font-primary);
+  padding: 12px 24px;
+  border-radius: 25px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow);
 }
 
 .btn-primary-green:hover {
-  background: var(--primary-green-dark);
-  border-color: var(--primary-green-dark);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--primary-green-dark) 0%, var(--primary-green) 100%);
   box-shadow: var(--shadow-lg);
+  color: white;
 }
 
 .btn-secondary-blue {
-  background: var(--secondary-blue);
-  border-color: var(--secondary-blue);
+  background: linear-gradient(135deg, var(--water-blue) 0%, var(--sky-blue) 100%);
+  border: none;
   color: white;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  font-family: var(--font-primary);
+  padding: 12px 24px;
+  border-radius: 25px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow);
 }
 
 .btn-secondary-blue:hover {
-  background: var(--secondary-blue-dark);
-  border-color: var(--secondary-blue-dark);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--sky-blue) 0%, var(--water-blue) 100%);
   box-shadow: var(--shadow-lg);
+  color: white;
 }
 
+/* Card Text Contrast */
+/* Card Modern - Reduced animations for agricultural theme */
 .card-modern {
-  background: white;
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
   box-shadow: var(--shadow);
-  border: none;
-  transition: all 0.3s ease;
+  border: 2px solid rgba(45, 80, 22, 0.1);
+  transition: box-shadow 0.2s ease;
+  backdrop-filter: blur(10px);
+  color: var(--text-dark);
+}
+
+.card-modern h6 {
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.card-modern p {
+  color: var(--text-muted);
 }
 
 .card-modern:hover {
-  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
+  border-color: var(--primary-green-light);
 }
 
+/* Agricultural Icons - Minimal animation */
+.card-modern i {
+  transition: color 0.2s ease;
+}
+
+.card-modern:hover i {
+  color: var(--primary-green);
+}
+
+/* Text Colors with Better Contrast */
 .text-primary-green {
   color: var(--primary-green) !important;
-}
-.text-secondary-blue {
-  color: var(--secondary-blue) !important;
-}
-.bg-primary-green {
-  background-color: var(--primary-green) !important;
-}
-.bg-secondary-blue {
-  background-color: var(--secondary-blue) !important;
+  font-weight: 600;
 }
 
-.rounded-modern {
-  border-radius: 12px !important;
+.text-secondary-blue {
+  color: var(--water-blue) !important;
+  font-weight: 600;
 }
+
+.text-harvest-gold {
+  color: var(--harvest-gold) !important;
+  font-weight: 600;
+}
+
+.text-earth-brown {
+  color: var(--earth-brown) !important;
+  font-weight: 600;
+}
+
+.text-light {
+  color: var(--text-light) !important;
+}
+
+.text-dark {
+  color: var(--text-dark) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* Background Colors with Proper Text Contrast */
+.bg-primary-green {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%) !important;
+  color: var(--text-light) !important;
+}
+
+.bg-secondary-blue {
+  background: linear-gradient(135deg, var(--water-blue) 0%, var(--sky-blue) 100%) !important;
+  color: var(--text-light) !important;
+}
+
+.bg-harvest-gold {
+  background: linear-gradient(135deg, var(--harvest-gold) 0%, var(--wheat-yellow) 100%) !important;
+  color: var(--text-dark) !important;
+}
+
+.bg-earth-brown {
+  background: linear-gradient(135deg, var(--earth-brown) 0%, var(--soil-brown) 100%) !important;
+  color: var(--text-light) !important;
+}
+
+/* Modern Styling */
+.rounded-modern {
+  border-radius: 20px !important;
+}
+
 .shadow-modern {
-  box-shadow: var(--shadow) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Form Controls with Better Contrast */
+/* Form Controls - No animations for professional look */
+.form-control {
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  padding: 12px 16px;
+  font-family: var(--font-secondary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-dark);
 }
 
 .form-control:focus {
   border-color: var(--primary-green);
-  box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.25);
-}
-
-.navbar-modern {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.homepage-main-section {
+  box-shadow: 0 0 0 0.3rem rgba(45, 80, 22, 0.25);
   background: white;
-  border-radius: 20px;
+  color: var(--text-dark);
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.form-select {
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  padding: 12px 16px;
+  font-family: var(--font-secondary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-dark);
+}
+
+.form-select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.3rem rgba(45, 80, 22, 0.25);
+  background: white;
+  color: var(--text-dark);
+  outline: none;
+}
+
+/* Navbar */
+.navbar-modern {
+  background: rgba(248, 255, 254, 0.95) !important;
+  backdrop-filter: blur(15px);
+  border-bottom: 2px solid rgba(45, 80, 22, 0.1);
+  box-shadow: var(--shadow);
+}
+
+/* Homepage Sections */
+.homepage-main-section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 25px;
   box-shadow: var(--shadow-lg);
-  border: none;
+  border: 2px solid rgba(45, 80, 22, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1.1rem; }
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  body { font-size: 14px; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+/* Loading Animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Form Validation Styles */
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+/* Custom validation for soil form */
+.soil-form input.is-invalid,
+.soil-form select.is-invalid,
+.soil-form textarea.is-invalid {
+  border: 2px solid #dc3545 !important;
+  background-color: #fff5f5;
+}
+
+.soil-form .invalid-feedback {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }

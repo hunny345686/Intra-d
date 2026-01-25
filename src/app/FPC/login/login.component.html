@@ -1,38 +1,49 @@
 <div class="login-card bg-white shadow-lg p-4" style="width: 100%; max-width: 420px;">
     <div class="text-center mb-4">
         <div class="login-icon mb-3">
-            <i class="fas fa-shield-alt text-primary" style="font-size: 3rem;"></i>
+            <i class="fas fa-shield-alt text-primary-green" style="font-size: 3rem;"></i>
         </div>
-        <h2 class="h4 fw-bold text-dark mb-2">Access Control System</h2>
-        <p class="text-muted small">Secure login to your agricultural dashboard</p>
+        <h2 class="h4 fw-bold text-dark mb-2">{{ 'login.title' | translate }}</h2>
+        <p class="text-muted small">{{ 'login.description' | translate }}</p>
     </div>
 
     <form (ngSubmit)="handleLogin()" #loginForm="ngForm">
         <div class="mb-4">
             <label for="email" class="form-label fw-semibold text-dark">
-                <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                <i class="fas fa-envelope me-2 text-primary-green"></i>{{ 'login.email' | translate }} <span class="text-danger">*</span>
             </label>
             <input type="email" id="email" [(ngModel)]="loginData.email" name="email"
-                placeholder="Enter your email address" class="form-control form-control-lg rounded-3 border-2"
-                style="padding: 12px 16px; border-color: #e0e6ed;" required>
+                   [class.is-invalid]="(loginForm.submitted || email.touched) && email.invalid"
+                   #email="ngModel"
+                   placeholder="Enter your email address" class="form-control form-control-lg rounded-3 border-2"
+                   style="padding: 12px 16px; border-color: #e0e6ed;" required email>
+            <div class="invalid-feedback" *ngIf="(loginForm.submitted || email.touched) && email.invalid">
+                <span *ngIf="email.errors?.['required']">Email is required</span>
+                <span *ngIf="email.errors?.['email']">Please enter a valid email</span>
+            </div>
         </div>
 
         <div class="mb-4">
             <label for="password" class="form-label fw-semibold text-dark">
-                <i class="fas fa-lock me-2 text-primary"></i>Password
+                <i class="fas fa-lock me-2 text-primary-green"></i>{{ 'login.password' | translate }} <span class="text-danger">*</span>
             </label>
             <input type="password" id="password" [(ngModel)]="loginData.password" name="password"
-                placeholder="Enter your password" class="form-control form-control-lg rounded-3 border-2"
-                style="padding: 12px 16px; border-color: #e0e6ed;" required>
+                   [class.is-invalid]="(loginForm.submitted || password.touched) && password.invalid"
+                   #password="ngModel"
+                   placeholder="Enter your password" class="form-control form-control-lg rounded-3 border-2"
+                   style="padding: 12px 16px; border-color: #e0e6ed;" required>
+            <div class="invalid-feedback" *ngIf="(loginForm.submitted || password.touched) && password.invalid">
+                Password is required
+            </div>
         </div>
 
         <!-- Login Button -->
-        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-3 fw-semibold mb-3"
-            style="padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;"
+        <button type="submit" class="btn btn-primary-green btn-lg w-100 rounded-3 fw-semibold mb-3"
+            style="padding: 12px;"
             [disabled]="!loginForm.valid || isLoading">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="fas fa-sign-in-alt me-2"></i>
-            {{ isLoading ? 'Signing In...' : 'Sign In' }}
+            {{ isLoading ? ('login.signingin' | translate) : ('login.submit' | translate) }}
         </button>
     </form>
 
@@ -50,16 +61,16 @@
 
     <!-- Footer Links -->
     <div class="text-center">
-        <a href="#" class="text-decoration-none text-primary small fw-medium d-block mb-3" data-bs-toggle="modal"
+        <a href="#" class="text-decoration-none text-primary-green small fw-medium d-block mb-3" data-bs-toggle="modal"
             data-bs-target="#forgotPassModal">
-            <i class="fas fa-key me-1"></i>Forgot Password?
+            <i class="fas fa-key me-1"></i>{{ 'login.forgot' | translate }}
         </a>
         <div class="border-top pt-3">
             <p class="text-muted small mb-0">
-                Don't have an account?
-                <button type="button" class="btn btn-link p-0 text-primary fw-semibold text-decoration-none"
+                {{ 'login.noaccount' | translate }}
+                <button type="button" class="btn btn-link p-0 text-primary-green fw-semibold text-decoration-none"
                     data-bs-toggle="modal" data-bs-target="#signupModal">
-                    Create Account
+                    {{ 'login.signup' | translate }}
                 </button>
             </p>
         </div>

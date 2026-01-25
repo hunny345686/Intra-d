@@ -1,15 +1,14 @@
 :host {
-  --footer-bg: #172a4e; /* Black background */
-  --footer-text-color: #ffffff; /* White text color */
-  --footer-link-color: #cccccc; /* Light gray for links */
-  --footer-link-hover-color: #ffffff; /* White on link hover */
+  --footer-bg: #2d5016;           /* Agricultural dark green */
+  --footer-text-color: #ffffff;   /* White text */
+  --footer-link-color: #f0f8f0;   /* Light green for links */
+  --footer-link-hover-color: #90ee90; /* Light green on hover */
   --footer-heading-color: #ffffff; /* White for headings */
-  --footer-divider-color: #444444; /* Dark gray for divider */
-  --social-icon-bg: #336699; /* Light blue/teal for social icons */
-  --social-icon-hover-bg: #4a90d9; /* Slightly brighter blue on hover */
-  --button-gift-bg: #666666; /* Gray for "MAKE A GIFT" button */
-  --button-gift-hover-bg: #888888; /* Lighter gray on hover */
-  --button-gift-border: #999999; /* Border for the gift button */
+  --footer-divider-color: #4a7c59; /* Medium green for divider */
+  --social-icon-bg: #4a7c59;      /* Medium green for social icons */
+  --social-icon-hover-bg: #6b8e23; /* Olive green on hover */
+  --button-bg: #6b8e23;           /* Olive green for buttons */
+  --button-hover-bg: #8b4513;     /* Earth brown on hover */
 }
 
 /* Overall Footer Styling */
@@ -76,23 +75,24 @@
   margin-bottom: 1rem;
 }
 
-/* Social Icons */
-.social-icons .social-icon {
-  display: inline-flex; /* Use flex to center icon */
+/* Social Icons with Better Contrast */
+.social-icons .btn {
+  background-color: var(--social-icon-bg);
+  border: 1px solid var(--social-icon-bg);
+  color: var(--footer-text-color);
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px; /* Fixed size for circular icons */
-  height: 38px;
-  border-radius: 50%; /* Circular shape */
-  background-color: var(--social-icon-bg);
-  color: var(--footer-text-color);
-  font-size: 1.1rem;
-  text-decoration: none;
-  transition: background-color 0.2s ease-in-out;
+  transition: all 0.3s ease;
 }
 
-.social-icons .social-icon:hover {
+.social-icons .btn:hover {
   background-color: var(--social-icon-hover-bg);
+  border-color: var(--social-icon-hover-bg);
+  color: var(--footer-text-color);
+  transform: translateY(-2px);
 }
 
 /* "MAKE A GIFT" Button */

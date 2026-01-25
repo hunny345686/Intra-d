@@ -2,35 +2,58 @@
 <div class="contact-form-container">
     <div class="row text-center mb-4">
         <div class="col-12">
-            <h1 class="get-in-touch-title mb-4">Get in touch</h1>
+            <h1 class="get-in-touch-title mb-4">{{ 'contact.title' | translate }}</h1>
         </div>
     </div>
 
     <form (ngSubmit)="onSubmit()" #contactForm="ngForm">
         <div class="row g-4">
             <div class="col-md-6">
-                <label for="firstName" class="form-label">First name</label>
-                <input type="text" class="form-control form-control-custom" id="firstName"
-                    [(ngModel)]="formData.firstName" name="firstName" required>
+                <label for="firstName" class="form-label">{{ 'contact.firstname' | translate }} <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-custom" 
+                       [class.is-invalid]="(contactForm.submitted || firstName.touched) && firstName.invalid"
+                       id="firstName" #firstName="ngModel"
+                       [(ngModel)]="formData.firstName" name="firstName" required>
+                <div class="invalid-feedback" *ngIf="(contactForm.submitted || firstName.touched) && firstName.invalid">
+                    First name is required
+                </div>
             </div>
             <div class="col-md-6">
-                <label for="lastName" class="form-label">Last name</label>
-                <input type="text" class="form-control form-control-custom" id="lastName"
-                    [(ngModel)]="formData.lastName" name="lastName" required>
+                <label for="lastName" class="form-label">{{ 'contact.lastname' | translate }} <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-custom" 
+                       [class.is-invalid]="(contactForm.submitted || lastName.touched) && lastName.invalid"
+                       id="lastName" #lastName="ngModel"
+                       [(ngModel)]="formData.lastName" name="lastName" required>
+                <div class="invalid-feedback" *ngIf="(contactForm.submitted || lastName.touched) && lastName.invalid">
+                    Last name is required
+                </div>
             </div>
             <div class="col-md-6">
-                <label for="email" class="form-label">Email *</label>
-                <input type="email" class="form-control form-control-custom" id="email" [(ngModel)]="formData.email"
-                    name="email" required email>
-                <label for="phone" class="form-label mt-4">Phone</label>
+                <label for="email" class="form-label">{{ 'contact.email' | translate }} <span class="text-danger">*</span></label>
+                <input type="email" class="form-control form-control-custom" 
+                       [class.is-invalid]="(contactForm.submitted || email.touched) && email.invalid"
+                       id="email" #email="ngModel" [(ngModel)]="formData.email"
+                       name="email" required email>
+                <div class="invalid-feedback" *ngIf="(contactForm.submitted || email.touched) && email.invalid">
+                    <span *ngIf="email.errors?.['required']">Email is required</span>
+                    <span *ngIf="email.errors?.['email']">Please enter a valid email</span>
+                </div>
+                <label for="phone" class="form-label mt-4">{{ 'contact.phone' | translate }}</label>
                 <input type="tel" class="form-control form-control-custom" id="phone" [(ngModel)]="formData.phone"
-                    name="phone">
+                    name="phone" pattern="[0-9]{10}" maxlength="10" minlength="10" 
+                    (input)="onPhoneInput($event)"
+                    title="Please enter exactly 10 digits" placeholder="Enter 10-digit phone number">
             </div>
             <!-- Message -->
             <div class="col-md-6">
-                <label for="message" class="form-label">Message</label>
-                <textarea class="form-control form-control-custom-textarea" id="message" [(ngModel)]="formData.message"
-                    name="message" rows="4"></textarea>
+                <label for="message" class="form-label">{{ 'contact.message' | translate }} <span class="text-danger">*</span></label>
+                <textarea class="form-control form-control-custom-textarea" 
+                          [class.is-invalid]="(contactForm.submitted || message.touched) && message.invalid"
+                          id="message" #message="ngModel" [(ngModel)]="formData.message"
+                          name="message" rows="4" required></textarea>
+                <div class="invalid-feedback" *ngIf="(contactForm.submitted || message.touched) && message.invalid">
+                    Message is required
+                </div>
             </div>
         </div>
         <!-- Submit Button -->
@@ -38,7 +61,7 @@
             <div class="col-12 text-center">
                 <button type="submit" class="btn btn-submit-green btn-lg px-5 py-3 rounded-pill shadow-sm"
                     [disabled]="!contactForm.valid">
-                    Submit
+                    {{ 'common.submit' | translate }}
                 </button>
             </div>
         </div>

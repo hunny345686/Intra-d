@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
 import { GeoLocationService } from '../../services/geo-location.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslatePipe } from '../../shared/translate.pipe';
 @Component({
   selector: 'app-book-soil',
   standalone: true,
-  imports: [FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, TranslatePipe],
   templateUrl: './book-soil.component.html',
   styleUrl: './book-soil.component.css',
 })
@@ -13,6 +15,8 @@ export class BookSoilComponent {
 
   
   
+  @ViewChild('soilForm') soilForm!: NgForm;
+
   title = 'Soil Test Booking';
 
   // Soil Test Form Model
@@ -39,7 +43,19 @@ export class BookSoilComponent {
   /**
    * Handle form submission
    */
+  onPhoneInput(event: any): void {
+    const input = event.target;
+    input.value = input.value.replace(/[^0-9]/g, '');
+    if (input.value.length > 10) {
+      input.value = input.value.slice(0, 10);
+    }
+  }
+
 async onSubmit() {
+  if (this.soilForm.invalid) {
+    this.soilForm.form.markAllAsTouched();
+    return;
+  }
   try {
     const location = await this.geoService.getCurrentLocation();
 

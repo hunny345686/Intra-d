@@ -9,56 +9,94 @@
 
     <form (ngSubmit)="onSubmit()" #sellerForm="ngForm" novalidate>
         <div class="mb-4">
-            <label for="sellerName" class="form-label fw-semibold">Name of Seller:</label>
-            <input type="text" class="form-control form-control-custom shadow-sm" id="sellerName"
-                [(ngModel)]="formData.sellerName" name="sellerName" placeholder="Enter your name" required>
+            <label for="sellerName" class="form-label fw-semibold">Name of Seller: <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-custom shadow-sm" 
+                   [class.is-invalid]="(sellerForm.submitted || sellerName.touched) && sellerName.invalid"
+                   id="sellerName" #sellerName="ngModel"
+                   [(ngModel)]="formData.sellerName" name="sellerName" placeholder="Enter your name" required>
+            <div class="invalid-feedback" *ngIf="(sellerForm.submitted || sellerName.touched) && sellerName.invalid">
+                Seller name is required
+            </div>
         </div>
 
         <div class="mb-4">
-            <label for="contactNo" class="form-label fw-semibold">Contact No:</label>
-            <input type="tel" class="form-control form-control-custom shadow-sm" id="contactNo"
-                [(ngModel)]="formData.contactNo" name="contactNo" placeholder="Enter your mobile number" required
-                pattern="[0-9]{10}" title="Please enter a 10-digit phone number">
+            <label for="contactNo" class="form-label fw-semibold">Contact No: <span class="text-danger">*</span></label>
+            <input type="tel" class="form-control form-control-custom shadow-sm" 
+                   [class.is-invalid]="(sellerForm.submitted || contactNo.touched) && contactNo.invalid"
+                   id="contactNo" #contactNo="ngModel"
+                   [(ngModel)]="formData.contactNo" name="contactNo" placeholder="Enter your mobile number" required
+                   (input)="onPhoneInput($event)"
+                   pattern="[0-9]{10}" maxlength="10" minlength="10" title="Please enter exactly 10 digits">
+            <div class="invalid-feedback" *ngIf="(sellerForm.submitted || contactNo.touched) && contactNo.invalid">
+                <span *ngIf="contactNo.errors?.['required']">Contact number is required</span>
+                <span *ngIf="contactNo.errors?.['pattern'] || contactNo.errors?.['minlength'] || contactNo.errors?.['maxlength']">Contact number must be exactly 10 digits</span>
+            </div>
         </div>
 
         <div class="mb-4">
-            <label for="rawMaterialType" class="form-label fw-semibold">Raw Material Type:</label>
-            <input type="text" class="form-control form-control-custom shadow-sm" id="rawMaterialType"
-                [(ngModel)]="formData.rawMaterialType" name="rawMaterialType" placeholder="e.g., Wheat, Mango, Onion"
-                required>
+            <label for="rawMaterialType" class="form-label fw-semibold">Raw Material Type: <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-custom shadow-sm" 
+                   [class.is-invalid]="sellerForm.submitted && rawMaterialType.invalid"
+                   id="rawMaterialType" #rawMaterialType="ngModel"
+                   [(ngModel)]="formData.rawMaterialType" name="rawMaterialType" placeholder="e.g., Wheat, Mango, Onion"
+                   required>
+            <div class="invalid-feedback" *ngIf="sellerForm.submitted && rawMaterialType.invalid">
+                Raw material type is required
+            </div>
         </div>
 
         <div class="mb-4">
-            <label for="quantity" class="form-label fw-semibold">Quantity:</label>
-            <input type="text" class="form-control form-control-custom shadow-sm" id="quantity"
-                [(ngModel)]="formData.quantity" name="quantity" placeholder="e.g., 1000 kg, 50 quintals" required>
+            <label for="quantity" class="form-label fw-semibold">Quantity: <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-custom shadow-sm" 
+                   [class.is-invalid]="sellerForm.submitted && quantity.invalid"
+                   id="quantity" #quantity="ngModel"
+                   [(ngModel)]="formData.quantity" name="quantity" placeholder="e.g., 1000 kg, 50 quintals" required>
+            <div class="invalid-feedback" *ngIf="sellerForm.submitted && quantity.invalid">
+                Quantity is required
+            </div>
         </div>
 
         <div class="mb-4">
-            <label for="location" class="form-label fw-semibold">Location:</label>
-            <input type="text" class="form-control form-control-custom shadow-sm" id="location"
-                [(ngModel)]="formData.location" name="location" placeholder="Enter your location (village/city)"
-                required>
+            <label for="location" class="form-label fw-semibold">Location: <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-custom shadow-sm" 
+                   [class.is-invalid]="sellerForm.submitted && location.invalid"
+                   id="location" #location="ngModel"
+                   [(ngModel)]="formData.location" name="location" placeholder="Enter your location (village/city)"
+                   required>
+            <div class="invalid-feedback" *ngIf="sellerForm.submitted && location.invalid">
+                Location is required
+            </div>
         </div>
 
         <!-- Additional Fields for Database/API -->
         <div class="row">
             <div class="col-md-6 mb-4">
-                <label for="sellerEmail" class="form-label fw-semibold">Email:</label>
-                <input type="email" class="form-control form-control-custom shadow-sm" id="sellerEmail"
-                    [(ngModel)]="formData.email" name="sellerEmail" placeholder="Enter your email" required email>
+                <label for="sellerEmail" class="form-label fw-semibold">Email: <span class="text-danger">*</span></label>
+                <input type="email" class="form-control form-control-custom shadow-sm" 
+                       [class.is-invalid]="sellerForm.submitted && sellerEmail.invalid"
+                       id="sellerEmail" #sellerEmail="ngModel"
+                       [(ngModel)]="formData.email" name="sellerEmail" placeholder="Enter your email" required email>
+                <div class="invalid-feedback" *ngIf="sellerForm.submitted && sellerEmail.invalid">
+                    <span *ngIf="sellerEmail.errors?.['required']">Email is required</span>
+                    <span *ngIf="sellerEmail.errors?.['email']">Please enter a valid email</span>
+                </div>
             </div>
             <div class="col-md-6 mb-4">
                 <label for="pricePerUnit" class="form-label fw-semibold">Price per Unit:</label>
                 <input type="number" class="form-control form-control-custom shadow-sm" id="pricePerUnit"
-                    [(ngModel)]="formData.pricePerUnit" name="pricePerUnit" placeholder="Enter price" required min="0" step="0.01">
+                    [(ngModel)]="formData.pricePerUnit" name="pricePerUnit" placeholder="Enter price" min="0" step="0.01">
             </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-4">
-                <label for="harvestDate" class="form-label fw-semibold">Harvest Date:</label>
-                <input type="date" class="form-control form-control-custom shadow-sm" id="harvestDate"
-                    [(ngModel)]="formData.harvestDate" name="harvestDate" required>
+                <label for="harvestDate" class="form-label fw-semibold">Harvest Date: <span class="text-danger">*</span></label>
+                <input type="date" class="form-control form-control-custom shadow-sm" 
+                       [class.is-invalid]="sellerForm.submitted && harvestDate.invalid"
+                       id="harvestDate" #harvestDate="ngModel"
+                       [(ngModel)]="formData.harvestDate" name="harvestDate" required>
+                <div class="invalid-feedback" *ngIf="sellerForm.submitted && harvestDate.invalid">
+                    Harvest date is required
+                </div>
             </div>
             <div class="col-md-6 mb-4">
                 <label for="qualityGrade" class="form-label fw-semibold">Quality Grade:</label>

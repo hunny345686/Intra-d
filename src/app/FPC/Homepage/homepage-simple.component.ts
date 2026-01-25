@@ -6,11 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { ServiceInfoComponent } from "../service-info/service-info.component";
+import { TranslatePipe } from '../../shared/translate.pipe';
 
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, TranslatePipe],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })

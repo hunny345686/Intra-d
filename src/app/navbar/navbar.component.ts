@@ -8,13 +8,15 @@ import {
 import { filter } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { LanguageSwitcherComponent } from '../shared/language-switcher.component';
+import { TranslatePipe } from '../shared/translate.pipe';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, LanguageSwitcherComponent, TranslatePipe],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
@@ -46,6 +48,22 @@ export class NavbarComponent {
   }
 
   onHomeClick(event: Event): void {
+    event.preventDefault();
+    
+    if (this.authService.isAuthenticated()) {
+      // Show confirmation modal if user is logged in
+      const modal = document.getElementById('homeConfirmModal');
+      if (modal) {
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+      }
+    } else {
+      // Navigate directly if not logged in
+      this.router.navigate(['/homepage']);
+    }
+  }
+
+  onLogoClick(event: Event): void {
     event.preventDefault();
     
     if (this.authService.isAuthenticated()) {

@@ -1,117 +1,90 @@
-/* src/app/homepage/homepage.component.css */
+/* Homepage Component - Agricultural Theme */
 
-/* CSS Variables for Theming */
 :host {
-  /* Colors */
-  --primary-green: #28a745;
-  --primary-green-hover: #218838;
-  --primary-green-border-hover: #1e7e34;
-
-  --secondary-blue: #007bff;
-  --secondary-blue-hover: #0069d9;
-  --secondary-blue-border-hover: #0062cc;
-
-  --info-light: #cfe2ff; /* Bootstrap's info background */
-  --info-light-text: #0c4187; /* Darker blue for contrast on info-light */
-  --info-light-hover: #b0cced;
-
-  --warning-light: #fff3cd; /* Bootstrap's warning background */
-  --warning-light-text: #664d03; /* Darker yellow for contrast on warning-light */
-  --warning-light-hover: #e0d0b0;
-
-  --body-bg: #f8f9fa; /* Light gray background */
-  --main-border-color: #6c757d; /* border-secondary equivalent */
-  --text-dark: #212529; /* Bootstrap's dark text */
-  --text-muted: #6c757d; /* Bootstrap's muted text */
-  --navbar-bg: #f8f9fa; /* Bootstrap's light background */
-  --modal-header-bg-success: #198754; /* Bootstrap's success background for modal header */
-
-  /* Border Radii */
-  --border-radius-xl: 1rem;
-  --border-radius-lg: 0.75rem;
-  --border-radius-md: 0.375rem;
-
-  /* Shadows */
-  --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  /* Agricultural Color Palette */
+  --primary-green: #2d5016;
+  --primary-green-light: #4a7c59;
+  --secondary-green: #6b8e23;
+  --earth-brown: #8b4513;
+  --harvest-gold: #daa520;
+  --wheat-yellow: #f5deb3;
+  --sky-blue: #87ceeb;
+  --water-blue: #4682b4;
+  
+  --text-dark: #2c3e50;
+  --text-muted: #7f8c8d;
+  --bg-cream: #faf0e6;
+  --border-color: #d4c5b9;
+  
+  --shadow: 0 4px 15px rgba(45, 80, 22, 0.1);
+  --shadow-lg: 0 10px 30px rgba(45, 80, 22, 0.15);
 }
 
-/* Custom Button Colors for category buttons */
-.btn-primary-green {
-  background-color: var(--primary-green);
-  border-color: var(--primary-green);
-  color: #fff;
-}
-.btn-primary-green:hover {
-  background-color: var(--primary-green-hover);
-  border-color: var(--primary-green-border-hover);
+/* Homepage Content Wrapper */
+.homepage-content-wrapper {
+  padding: 20px;
+  animation: fadeInUp 0.8s ease-out;
 }
 
-.btn-secondary-blue {
-  background-color: var(--secondary-blue);
-  border-color: var(--secondary-blue);
-  color: #fff;
-}
-.btn-secondary-blue:hover {
-  background-color: var(--secondary-blue-hover);
-  border-color: var(--secondary-blue-border-hover);
-}
-
-.btn-info-light {
-  background-color: var(--info-light);
-  border-color: var(--info-light);
-  color: var(--info-light-text);
-}
-.btn-info-light:hover {
-  background-color: var(--info-light-hover);
-  border-color: var(--info-light-hover);
+/* Category Cards with Agricultural Theme */
+.card-modern {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  border: 2px solid rgba(45, 80, 22, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-warning-light {
-  background-color: var(--warning-light);
-  border-color: var(--warning-light);
-  color: var(--warning-light-text);
-}
-.btn-warning-light:hover {
-  background-color: var(--warning-light-hover);
-  border-color: var(--warning-light-hover);
-}
-
-/* Rounded corners for various elements */
-.rounded-xl {
-  border-radius: var(--border-radius-xl) !important;
+.card-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(45, 80, 22, 0.1), transparent);
+  transition: left 0.5s;
 }
 
-.rounded-lg-custom {
-  border-radius: var(--border-radius-lg) !important;
+.card-modern:hover::before {
+  left: 100%;
 }
 
-.rounded-md-custom {
-  border-radius: var(--border-radius-md) !important;
+.card-modern:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-green-light);
 }
 
-/* Login Button Shadow */
-#simulate-login-btn {
-  box-shadow: var(--shadow-sm);
+/* Agricultural Icons Animation */
+.card-modern i {
+  transition: all 0.4s ease;
+  position: relative;
+  z-index: 1;
 }
 
-/* Modals specific styles */
-.modal-header.bg-primary-green {
-  background-color: var(--primary-green) !important;
-}
-.modal-header.bg-success {
-  background-color: var(--modal-header-bg-success) !important;
+.card-modern:hover i {
+  transform: scale(1.3) rotate(5deg);
+  filter: drop-shadow(0 4px 8px rgba(45, 80, 22, 0.3));
 }
 
-/* Signup Modal specific styling */
-.rounded-top-custom {
-  border-top-left-radius: var(--border-radius-xl) !important;
-  border-top-right-radius: var(--border-radius-xl) !important;
-}
+/* Specific Icon Colors */
+.fa-tractor { color: var(--earth-brown) !important; }
+.fa-users { color: var(--primary-green) !important; }
+.fa-shopping-basket { color: var(--harvest-gold) !important; }
+.fa-cloud-sun { color: var(--sky-blue) !important; }
+.fa-seedling { color: var(--secondary-green) !important; }
 
-/* Carousel specific classes for consistency */
+/* Carousel Enhancements - Fixed Height Issues */
 #homepageCarousel {
-  box-shadow: var(--shadow-md); /* Apply a shadow to the carousel */
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 3px solid rgba(45, 80, 22, 0.1);
+  height: 450px; /* Fixed container height */
 }
 
 #homepageCarousel .carousel-inner {
@@ -120,53 +93,197 @@
 
 #homepageCarousel .carousel-item {
   height: 100%;
+  transition: transform 0.8s ease-in-out;
 }
 
-#homepageCarousel .carousel-item img.d-block {
-  height: 570px;
+#homepageCarousel .carousel-item img {
+  height: 100% !important;
+  width: 100%;
   object-fit: cover;
-  width: 100%;
+  object-position: center;
+  filter: brightness(0.9) contrast(1.1);
+  transition: all 0.3s ease;
 }
 
-/* Login card alignment and sizing */
-.login-card {
-  height: fit-content;
-  max-height: 100%;
-  width: 100%;
+#homepageCarousel:hover .carousel-item img {
+  filter: brightness(1) contrast(1.2);
+  transform: scale(1.02);
 }
 
-#pre-login-content .col-md-4 {
-  display: flex;
-  align-items: flex-start;
+/* Carousel Caption Styling */
+.carousel-caption {
+  background: rgba(45, 80, 22, 0.8);
+  border-radius: 15px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
 }
 
-#pre-login-content .col-md-4 app-login {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+.carousel-caption h5 {
+  color: var(--wheat-yellow);
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-/* Responsive adjustments for overall homepage content */
-@media (max-width: 767.98px) {
+.carousel-caption p {
+  color: white;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Modal Enhancements */
+.modal-content {
+  border-radius: 25px;
+  border: none;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(15px);
+}
+
+.modal-header {
+  border-radius: 25px 25px 0 0;
+  border-bottom: 2px solid rgba(45, 80, 22, 0.1);
+}
+
+.modal-header.bg-primary-green {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%) !important;
+}
+
+.modal-header.bg-secondary-blue {
+  background: linear-gradient(135deg, var(--water-blue) 0%, var(--sky-blue) 100%) !important;
+}
+
+.modal-header.bg-info {
+  background: linear-gradient(135deg, var(--sky-blue) 0%, var(--water-blue) 100%) !important;
+}
+
+/* Form Styling */
+.form-control, .form-select {
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 0.3rem rgba(45, 80, 22, 0.25);
+  background: white;
+  transform: translateY(-2px);
+}
+
+/* Button Enhancements */
+.btn {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Weather Modal Specific */
+.modal-body .display-4 {
+  font-weight: 700;
+  color: var(--water-blue);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Farmers Modal Stats */
+.modal-body .border {
+  border: 2px solid var(--border-color) !important;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  background: rgba(248, 255, 254, 0.5);
+}
+
+.modal-body .border:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary-green-light) !important;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -10px, 0);
+  }
+  70% {
+    transform: translate3d(0, -5px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+/* Responsive Design - Fixed Carousel Heights */
+@media (max-width: 768px) {
   .homepage-content-wrapper {
-    margin: 1rem auto; /* Reduce margin on small screens */
-    padding: 1rem; /* Reduce padding on small screens */
+    padding: 15px;
   }
-  #pre-login-content .col-md-8,
-  #pre-login-content .col-md-4 {
-    margin-bottom: 1.5rem; /* Add spacing when columns stack */
+  
+  .card-modern {
+    margin-bottom: 15px;
   }
-  #pre-login-content .col-md-4:last-child {
-    margin-bottom: 0; /* Remove extra margin for the last stacked column */
+  
+  #homepageCarousel {
+    height: 300px; /* Smaller height for tablets */
   }
+  
+  .modal-dialog {
+    margin: 10px;
+  }
+}
 
-  #pre-login-content .col-md-4 {
-    justify-content: center;
-    margin-top: 1rem;
+@media (max-width: 576px) {
+  #homepageCarousel {
+    height: 250px; /* Even smaller for mobile */
   }
-
-  .login-card {
-    max-width: 400px;
-    margin: 0 auto;
+  
+  .card-modern {
+    padding: 15px !important;
+  }
+  
+  .card-modern i {
+    font-size: 1.5rem !important;
+  }
+  
+  .card-modern h6 {
+    font-size: 0.9rem;
+  }
+  
+  .card-modern p {
+    font-size: 0.8rem;
   }
 }

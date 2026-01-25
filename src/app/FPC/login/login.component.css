@@ -15,8 +15,16 @@
 }
 
 .form-control:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  border-color: #2d5016;
+  box-shadow: 0 0 0 0.2rem rgba(45, 80, 22, 0.25);
+}
+
+.login-icon i {
+  color: #2d5016 !important;
+}
+
+.text-primary {
+  color: #2d5016 !important;
 }
 
 .btn:hover {

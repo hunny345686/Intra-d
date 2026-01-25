@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
+import { TranslatePipe } from '../../shared/translate.pipe';
 
 interface DropdownOption {
   label: string;
@@ -12,11 +13,13 @@ interface DropdownOption {
 @Component({
   selector: 'app-buyer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './buyer.component.html',
   styleUrls: ['./buyer.component.css']
 })
 export class BuyerComponent implements OnInit {
+  @ViewChild('buyerForm') buyerForm!: NgForm;
+
   // Data structure for all dropdowns
   productHierarchy = {
     'fruits-vegetables': {
@@ -141,6 +144,14 @@ export class BuyerComponent implements OnInit {
     private router: Router
   ) {}
 
+  onPhoneInput(event: any): void {
+    const input = event.target;
+    input.value = input.value.replace(/[^0-9]/g, '');
+    if (input.value.length > 10) {
+      input.value = input.value.slice(0, 10);
+    }
+  }
+
   ngOnInit(): void {
     this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
@@ -178,6 +189,10 @@ export class BuyerComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.buyerForm.invalid) {
+      this.buyerForm.form.markAllAsTouched();
+      return;
+    }
     const submissionData = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
