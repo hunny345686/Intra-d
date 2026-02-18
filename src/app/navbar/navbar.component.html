@@ -43,18 +43,6 @@
                         href="#">
                         <i class="fas fa-info-circle me-2"></i>{{ 'nav.about' | translate }}</a>
                 </li>
-                <!-- Book Dropdown -->
-                <li class="nav-item dropdown me-2 mb-2 mb-lg-0"
-                    [class.active]="isDropdownActive('/booksoil') || isDropdownActive('/bookfield')">
-                    <a class="nav-link btn btn-outline-primary-green rounded-modern dropdown-toggle fw-medium"
-                        id="navbarBookDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                        style="cursor: pointer;">
-                        <i class="fas fa-calendar-check me-2"></i>{{ 'nav.book' | translate }}
-                    </a>
-                    <ul class="dropdown-menu shadow-sm rounded-lg-custom" aria-labelledby="navbarBookDropdown">
-                        <li routerLinkActive="active"><a class="dropdown-item" [routerLink]="['/booksoil']">{{ 'nav.booksoil' | translate }}</a></li>
-                    </ul>
-                </li>
                 <li class="nav-item me-2 mb-2 mb-lg-0" routerLinkActive="active">
                     <a class="nav-link btn btn-outline-primary-green rounded-modern fw-medium" [routerLink]="['/contact']"
                         href="#"><i class="fas fa-envelope me-2"></i>{{ 'nav.contact' | translate }}</a>

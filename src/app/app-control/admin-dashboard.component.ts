@@ -1,0 +1,355 @@
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { FirebaseService } from '../services/firebase.service';
+import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+interface DashboardStats {
+  totalFarmers: number;
+  totalBuyers: number;
+  cropsAvailable: number;
+  urgentCrops: number;
+  activeBuyers: number;
+}
+
+interface CropData {
+  name: string;
+  quantity: number;
+}
+
+@Component({
+  selector: 'app-admin-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './admin-dashboard.component.html',
+  styleUrls: ['./admin-dashboard.component.css']
+})
+export class AdminDashboardComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  @Output() backToControl = new EventEmitter<void>();
+  activeView: 'dashboard' | 'farmers' | 'buyers' | 'service-requests' | 'soil-tests' | 'reports' = 'dashboard';
+  stats: DashboardStats = {
+    totalFarmers: 0,
+    totalBuyers: 0,
+    cropsAvailable: 0,
+    urgentCrops: 0,
+    activeBuyers: 0
+  };
+
+  cropsAvailable: CropData[] = [];
+  urgentCrops: any[] = [];
+  buyerDemands: any[] = [];
+  farmersData: any[] = [];
+  buyersData: any[] = [];
+  serviceRequests: any[] = [];
+  soilTestRequests: any[] = [];
+  loading = true;
+
+  constructor(
+    private router: Router,
+    private firebaseService: FirebaseService
+  ) {}
+
+  ngOnInit() {
+    this.loadDashboardData();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadDashboardData() {
+    this.loading = true;
+    console.log('Loading dashboard data...');
+    
+    // Load all users (farmers and sellers)
+    this.firebaseService.getAllUsers().subscribe({
+      next: (users: any) => {
+        console.log('Users response:', users);
+        if (users) {
+          const userList = Object.values(users).flat();
+          const farmers = userList.filter((user: any) => 
+            user.role === 'farmer' || !user.role
+          );
+          const sellers = userList.filter((user: any) => 
+            user.role === 'seller'
+          );
+          
+          this.stats.totalFarmers = farmers.length;
+          this.stats.totalBuyers = sellers.length;
+          this.stats.activeBuyers = sellers.length;
+          
+          // Calculate crops available from farmers data
+          let totalCrops = 0;
+          this.cropsAvailable = [];
+          const cropMap = new Map();
+          
+          farmers.forEach((farmer: any) => {
+            if (farmer.typicalCrops) {
+              const crops = farmer.typicalCrops.split(',');
+              crops.forEach((crop: string) => {
+                const cropName = crop.trim();
+                const quantity = farmer.acreOfLand ? farmer.acreOfLand * 1000 : 1000;
+                totalCrops += quantity;
+                
+                if (cropMap.has(cropName)) {
+                  cropMap.set(cropName, cropMap.get(cropName) + quantity);
+                } else {
+                  cropMap.set(cropName, quantity);
+                }
+              });
+            }
+          });
+          
+          this.cropsAvailable = Array.from(cropMap.entries()).map(([name, quantity]) => ({
+            name,
+            quantity
+          }));
+          
+          this.stats.cropsAvailable = totalCrops;
+          this.stats.urgentCrops = Math.floor(totalCrops * 0.18);
+          
+          console.log('Stats updated:', this.stats);
+        }
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading users:', error);
+        this.stats.totalFarmers = 0;
+        this.stats.totalBuyers = 0;
+        this.stats.activeBuyers = 0;
+        this.loading = false;
+      }
+    });
+
+    // Set fallback data for buyer demands and urgent crops
+    this.buyerDemands = [
+      { name: 'FreshMart', bid: '₹3,000', ttl: '3 days' },
+      { name: 'AgriCorp', bid: '₹1,500', ttl: 'Tomorrow' },
+      { name: 'GreenMarket', bid: '₹2,500', ttl: '5 days' }
+    ];
+
+    this.urgentCrops = [
+      { name: 'Chilli', quantity: 1800, timeframe: '24 hrs' },
+      { name: 'Onion', quantity: 4500, timeframe: '48 hrs' },
+      { name: 'Tomato', quantity: 2200, timeframe: '72 hrs' }
+    ];
+    
+    console.log('Dashboard data loaded');
+  }
+
+  setActiveView(view: 'dashboard' | 'farmers' | 'buyers' | 'service-requests' | 'soil-tests' | 'reports') {
+    console.log('Setting active view to:', view);
+    this.activeView = view;
+    
+    if (view === 'farmers') {
+      this.loadFarmersData();
+    } else if (view === 'buyers') {
+      this.loadBuyersData();
+    } else if (view === 'service-requests') {
+      this.loadServiceRequests();
+    } else if (view === 'soil-tests') {
+      this.loadSoilTestRequests();
+    } else if (view === 'dashboard') {
+      this.loadDashboardData();
+    }
+  }
+
+  loadFarmersData() {
+    console.log('Loading farmers data...');
+    this.loading = true;
+    this.firebaseService.getAllUsers().subscribe({
+      next: (users: any) => {
+        console.log('Farmers data received:', users);
+        if (users) {
+          const userList = Object.values(users).flat();
+          this.farmersData = userList.filter((user: any) => 
+            user.role === 'farmer' || !user.role
+          ).map((farmer: any) => ({
+            ...farmer,
+            totalLand: farmer.acreOfLand || 0,
+            cropsProduced: farmer.typicalCrops || 'N/A',
+            waterSource: farmer.waterSource || 'N/A',
+            soilType: farmer.soilType || 'N/A',
+            fertilizers: farmer.fertilizers || 'N/A'
+          }));
+          console.log('Processed farmers data:', this.farmersData);
+        }
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading farmers:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  loadBuyersData() {
+    console.log('Loading buyers data...');
+    this.loading = true;
+    
+    this.firebaseService.getAllUsers().subscribe({
+      next: (users: any) => {
+        if (users) {
+          const userList = Object.values(users).flat();
+          this.buyersData = userList.filter((user: any) => 
+            user.role === 'buyer' || user.role === 'seller'
+          ).map((buyer: any) => ({
+            ...buyer,
+            companyName: buyer.name || 'N/A',
+            contactPerson: buyer.name || 'N/A',
+            mobileNo: buyer.mobileNo || buyer.phone || 'N/A',
+            email: buyer.email || 'N/A'
+          }));
+        }
+        
+        // If no buyers found, show fallback data
+        if (this.buyersData.length === 0) {
+          this.buyersData = [
+            {
+              companyName: 'FreshMart Ltd',
+              contactPerson: 'John Smith',
+              cropRequired: 'Onions, Tomatoes',
+              quantity: '5000 Kg',
+              budget: '₹50,000',
+              deliveryDate: '2024-01-15'
+            },
+            {
+              companyName: 'AgriCorp',
+              contactPerson: 'Sarah Johnson',
+              cropRequired: 'Chilli, Garlic',
+              quantity: '3000 Kg',
+              budget: '₹30,000',
+              deliveryDate: '2024-01-20'
+            },
+            {
+              companyName: 'GreenMarket',
+              contactPerson: 'Mike Wilson',
+              cropRequired: 'Potatoes',
+              quantity: '8000 Kg',
+              budget: '₹80,000',
+              deliveryDate: '2024-01-25'
+            }
+          ];
+        }
+        
+        console.log('Processed buyers data:', this.buyersData);
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading buyers:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  loadServiceRequests() {
+    console.log('Loading service requests...');
+    this.loading = true;
+    
+    this.firebaseService.getAllServiceRequests().subscribe({
+      next: (requests: any) => {
+        console.log('Service requests received:', requests);
+        if (requests) {
+          this.serviceRequests = Object.entries(requests).map(([key, value]: [string, any]) => ({
+            id: key,
+            ...value
+          }));
+        } else {
+          this.serviceRequests = [];
+        }
+        console.log('Processed service requests:', this.serviceRequests);
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading service requests:', error);
+        this.serviceRequests = [];
+        this.loading = false;
+      }
+    });
+  }
+
+  loadSoilTestRequests() {
+    console.log('Loading soil test requests...');
+    this.loading = true;
+    
+    this.firebaseService.getAllSoilTestRequests().subscribe({
+      next: (requests: any) => {
+        console.log('Soil test requests received:', requests);
+        if (requests) {
+          this.soilTestRequests = Object.entries(requests).map(([key, value]: [string, any]) => ({
+            id: key,
+            ...value
+          }));
+        } else {
+          this.soilTestRequests = [];
+        }
+        console.log('Processed soil test requests:', this.soilTestRequests);
+        this.loading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading soil test requests:', error);
+        this.soilTestRequests = [];
+        this.loading = false;
+      }
+    });
+  }
+
+  updateRequestStatus(requestId: string, status: string, type: 'service' | 'soil') {
+    console.log(`Updating ${type} request ${requestId} to status: ${status}`);
+    
+    const updateData = {
+      status,
+      updatedAt: new Date().toISOString()
+    };
+
+    if (type === 'service') {
+      this.firebaseService.updateServiceRequest(requestId, updateData).subscribe({
+        next: () => {
+          alert('Request status updated successfully!');
+          this.loadServiceRequests();
+        },
+        error: (error) => {
+          console.error('Error updating request:', error);
+          alert('Failed to update request status');
+        }
+      });
+    } else {
+      this.firebaseService.updateSoilTestRequest(requestId, updateData).subscribe({
+        next: () => {
+          alert('Soil test request status updated successfully!');
+          this.loadSoilTestRequests();
+        },
+        error: (error) => {
+          console.error('Error updating soil test request:', error);
+          alert('Failed to update soil test request status');
+        }
+      });
+    }
+  }
+
+  navigateToFarmers() {
+    console.log('Switching to farmers view');
+    this.setActiveView('farmers');
+  }
+
+  navigateToBuyers() {
+    console.log('Switching to buyers view');
+    this.setActiveView('buyers');
+  }
+
+  navigateToReports() {
+    console.log('Switching to reports view');
+    this.setActiveView('reports');
+  }
+
+  goBackToControl() {
+    this.backToControl.emit();
+  }
+
+  matchBuyerSeller() {
+    console.log('Matching buyers and sellers...');
+  }
+}

@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, push, set } from 'firebase/database';
@@ -85,6 +85,30 @@ export class FirebaseService {
     return this.http.get(`${this.baseUrl}/signUpFrom.json`);
   }
 
+  // Update user password
+  updateUserPassword(email: string, newPassword: string): Observable<any> {
+    return this.getAllUsers().pipe(
+      switchMap((users: any) => {
+        if (!users) return from([null]);
+        
+        // Find user by email
+        for (const userId in users) {
+          const userContainer = users[userId];
+          for (const firebaseKey in userContainer) {
+            const user = userContainer[firebaseKey];
+            if (user && user.email === email) {
+              // Update password using HTTP PATCH
+              return this.http.patch(`${this.baseUrl}/signUpFrom/${userId}/${firebaseKey}.json`, {
+                password: newPassword
+              });
+            }
+          }
+        }
+        return from([null]);
+      })
+    );
+  }
+
   // Firebase Auth signup
   signupWithEmailPassword(email: string, password: string): Observable<any> {
     return from(createUserWithEmailAndPassword(this.auth, email, password));
@@ -140,6 +164,53 @@ export class FirebaseService {
   // Get all lease applications
   getAllLeaseApplications(): Observable<any> {
     return this.http.get(`${this.baseUrl}/landLeaseApplication.json`);
+  }
+
+  // Service Requests Management
+  createServiceRequest(serviceData: any): Observable<any> {
+    const requestId = this.generateRequestId();
+    const requestWithId = {
+      ...serviceData,
+      requestId,
+      status: 'pending',
+      submittedAt: new Date().toISOString()
+    };
+    
+    return this.http.post(`${this.baseUrl}/serviceRequests/${requestId}.json`, requestWithId);
+  }
+
+  getAllServiceRequests(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/serviceRequests.json`);
+  }
+
+  updateServiceRequest(requestId: string, data: any): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/serviceRequests/${requestId}.json`, data);
+  }
+
+  deleteServiceRequest(requestId: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/serviceRequests/${requestId}.json`);
+  }
+
+  // Soil Test Requests
+  getAllSoilTestRequests(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/soilTest.json`);
+  }
+
+  updateSoilTestRequest(requestId: string, data: any): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/soilTest/${requestId}.json`, data);
+  }
+
+  // Buyer/Seller Forms
+  getAllBuyerForms(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/buyerForms.json`);
+  }
+
+  getAllSellerForms(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/sellerForms.json`);
+  }
+
+  private generateRequestId(): string {
+    return 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   private generateUserId(): string {

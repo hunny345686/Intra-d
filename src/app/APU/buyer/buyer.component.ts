@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
-import { TranslatePipe } from '../../shared/translate.pipe';
 
 interface DropdownOption {
   label: string;
@@ -13,7 +12,7 @@ interface DropdownOption {
 @Component({
   selector: 'app-buyer',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, FormsModule],
   templateUrl: './buyer.component.html',
   styleUrls: ['./buyer.component.css']
 })
@@ -138,6 +137,11 @@ export class BuyerComponent implements OnInit {
   selectedDetails = '';
 
   buyerData = { name: '', email: '', phone: '', quantity: '' };
+  
+  // View management
+  currentView: 'form' | 'confirmation' = 'form';
+  submittedData: any = null;
+  showLastSubmission: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -160,6 +164,31 @@ export class BuyerComponent implements OnInit {
     this.mainCategories = [
       { label: 'Fruits & Vegetables', value: 'fruits-vegetables' }
     ];
+    
+    // Load last submission from localStorage
+    this.loadLastSubmission();
+  }
+  
+  /**
+   * Load last submission from localStorage
+   */
+  loadLastSubmission(): void {
+    const lastSubmission = localStorage.getItem('lastBuyerSubmission');
+    if (lastSubmission) {
+      try {
+        this.submittedData = JSON.parse(lastSubmission);
+        this.showLastSubmission = true;
+      } catch (error) {
+        console.error('Error loading last submission:', error);
+      }
+    }
+  }
+  
+  /**
+   * Toggle last submission visibility
+   */
+  toggleLastSubmission(): void {
+    this.showLastSubmission = !this.showLastSubmission;
   }
 
   onMainCategoryChange(): void {
@@ -196,18 +225,43 @@ export class BuyerComponent implements OnInit {
     const submissionData = {
       id: Date.now().toString(),
       timestamp: new Date().toISOString(),
-      mainCategory: this.selectedMainCategory,
-      subCategory: this.selectedSubCategory,
-      productType: this.selectedProductType,
-      details: this.selectedDetails,
+      mainCategory: this.getLabel(this.mainCategories, this.selectedMainCategory),
+      subCategory: this.getLabel(this.subCategories, this.selectedSubCategory),
+      productType: this.getLabel(this.productTypes, this.selectedProductType),
+      details: this.getLabel(this.detailsOptions, this.selectedDetails),
       buyer: this.buyerData,
       status: 'pending',
     };
 
     console.log('Buyer Inquiry Submitted:', submissionData);
-    // In a real application, send submissionData to your backend API
-    alert('Your buyer inquiry has been submitted! Check console for details.');
+    
+    // Save to localStorage for future reference
+    localStorage.setItem('lastBuyerSubmission', JSON.stringify(submissionData));
+    
+    // Store submitted data and show confirmation
+    this.submittedData = submissionData;
+    this.currentView = 'confirmation';
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * Go back to form view
+   */
+  backToForm(): void {
+    this.currentView = 'form';
     this.resetForm();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * Submit another inquiry
+   */
+  submitAnother(): void {
+    this.currentView = 'form';
+    this.resetForm();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   /**
@@ -222,5 +276,6 @@ export class BuyerComponent implements OnInit {
     this.subCategories = [];
     this.productTypes = [];
     this.detailsOptions = [];
+    this.submittedData = null;
   }
 }

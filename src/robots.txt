@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /control
+Disallow: /buyer
+Disallow: /farmer
+Disallow: /profile
+Disallow: /report
+
+Sitemap: https://intra-d.web.app/sitemap.xml

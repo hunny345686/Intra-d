@@ -294,6 +294,82 @@
             </div>
         </div>
     </div>
+
+    <!-- Book Soil Test Section - Only for Farmers -->
+    <div *ngIf="currentUser?.role === 'farmer'" class="card-modern p-4 mb-4">
+        <h3 class="text-secondary-blue mb-4"><i class="fas fa-vial me-2"></i>Book Soil Test</h3>
+        <form (ngSubmit)="handleSoilTestSubmission()" #soilForm="ngForm" novalidate>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="farmerName" class="form-label fw-semibold">Farmer Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control rounded-md-custom" id="farmerName"
+                        [(ngModel)]="soilTestData.farmerName" name="farmerName" 
+                        placeholder="Enter farmer name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="mobileNumber" class="form-label fw-semibold">Mobile Number <span class="text-danger">*</span></label>
+                    <input type="tel" class="form-control rounded-md-custom" id="mobileNumber"
+                        [(ngModel)]="soilTestData.mobileNumber" name="mobileNumber" 
+                        placeholder="Enter mobile number" pattern="[0-9]{10}" maxlength="10" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="village" class="form-label fw-semibold">Village/Area <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control rounded-md-custom" id="village"
+                        [(ngModel)]="soilTestData.village" name="village" 
+                        placeholder="Enter village name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="landArea" class="form-label fw-semibold">Land Area (Acres) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control rounded-md-custom" id="landArea"
+                        [(ngModel)]="soilTestData.landArea" name="landArea" 
+                        placeholder="Enter land area" step="0.1" min="0" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="irrigationType" class="form-label fw-semibold">Irrigation Type <span class="text-danger">*</span></label>
+                    <select class="form-select rounded-md-custom" id="irrigationType"
+                        [(ngModel)]="soilTestData.irrigationType" name="irrigationType" required>
+                        <option selected disabled value="">Select irrigation type</option>
+                        <option value="rainfed">Rainfed</option>
+                        <option value="borewell">Borewell</option>
+                        <option value="canal">Canal</option>
+                        <option value="drip">Drip Irrigation</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="currentCrop" class="form-label fw-semibold">Current Crop <span class="text-danger">*</span></label>
+                    <select class="form-select rounded-md-custom" id="currentCrop"
+                        [(ngModel)]="soilTestData.currentCrop" name="currentCrop" required>
+                        <option selected disabled value="">Select current crop</option>
+                        <option value="mango">Mango</option>
+                        <option value="papaya">Papaya</option>
+                        <option value="tomato">Tomato</option>
+                        <option value="vegetables">Vegetables</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="sampleDate" class="form-label fw-semibold">Sample Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control rounded-md-custom" id="sampleDate"
+                        [(ngModel)]="soilTestData.sampleDate" name="sampleDate" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="previousCrop" class="form-label fw-semibold">Previous Crop</label>
+                    <input type="text" class="form-control rounded-md-custom" id="previousCrop"
+                        [(ngModel)]="soilTestData.previousCrop" name="previousCrop" 
+                        placeholder="Enter previous crop">
+                </div>
+                <div class="col-12">
+                    <label for="problemDescription" class="form-label fw-semibold">Problem Description</label>
+                    <textarea class="form-control rounded-md-custom" id="problemDescription" rows="3"
+                        [(ngModel)]="soilTestData.problemDescription" name="problemDescription"
+                        placeholder="Describe any soil or crop problems"></textarea>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary-green rounded-md-custom mt-3"
+                        [disabled]="!soilForm.valid">Submit Soil Test Request</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Dummy Success Modal for DashboardComponent to use -->

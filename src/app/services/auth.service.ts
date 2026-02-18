@@ -1,6 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 export interface User {
   id: string;
@@ -26,7 +27,10 @@ export class AuthService {
   public readonly currentUser$ = this.currentUserSubject.asObservable();
   private sessionTimeout: any;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router
+  ) {
     this.checkAuthStatus();
   }
 
@@ -54,13 +58,16 @@ export class AuthService {
         for (const firebaseKey in userContainer) {
           const user = userContainer[firebaseKey];
           if (user?.email === email && user?.password === password) {
+            // Extract phone number from multiple possible fields
+            const phoneNumber = user.phone || user.phoneNumber || user.mobileNo || user.mobile || '';
+            
             return { 
               id: user.userId || userId, 
               email: user.email, 
               role: user.role || 'farmer',
-              name: user.name || user.firstName + ' ' + (user.lastName || ''),
-              phone: user.phone || user.phoneNumber,
-              location: user.location || user.address,
+              name: user.name || (user.firstName ? user.firstName + ' ' + (user.lastName || '') : ''),
+              phone: phoneNumber,
+              location: user.location || user.address || user.village || '',
               profileData: user
             };
           }
@@ -100,7 +107,7 @@ export class AuthService {
     }
   }
 
-  logout(): void {
+  logout(redirectTo: string = '/homepage'): void {
     try {
       if (isPlatformBrowser(this.platformId)) {
         localStorage.removeItem('currentUser');
@@ -108,8 +115,30 @@ export class AuthService {
       }
       this.clearSessionTimeout();
       this.currentUserSubject.next(null);
+      
+      // Navigate to the specified route after logout
+      this.router.navigate([redirectTo]);
     } catch (error) {
       console.error('Logout error:', error);
+      // Fallback navigation on error
+      this.router.navigate(['/homepage']);
+    }
+  }
+
+  /**
+   * Get the appropriate dashboard route based on user role
+   */
+  getDashboardRoute(role?: string): string {
+    const userRole = role || this.currentUserSubject.value?.role;
+    switch (userRole) {
+      case 'admin':
+        return '/control';
+      case 'farmer':
+        return '/farmer';
+      case 'user':
+        return '/buyer';
+      default:
+        return '/homepage';
     }
   }
 
@@ -142,7 +171,7 @@ export class AuthService {
   private startSessionTimeout(): void {
     this.clearSessionTimeout();
     this.sessionTimeout = setTimeout(() => {
-      this.logout();
+      this.logout('/homepage');
     }, 30 * 60 * 1000); // 30 minutes
   }
 

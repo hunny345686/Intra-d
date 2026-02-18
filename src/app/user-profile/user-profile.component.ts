@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../services/auth.service';
 import { APP_CONSTANTS } from '../constants';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface ProfileData {
   name: string;
@@ -20,7 +22,8 @@ interface ProfileData {
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   currentUser: User | null = null;
   profileData: ProfileData | null = null;
 
@@ -30,20 +33,30 @@ export class UserProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe(user => {
-      this.currentUser = user;
-      if (user) {
-        this.loadProfileData(user);
-      }
-    });
+    this.authService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+        if (user) {
+          this.loadProfileData(user);
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private loadProfileData(user: User) {
     // Use Firebase data if available, otherwise use mock data
+    // Check multiple possible phone field names
+    const phoneNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '9876543210';
+    console.log('Phone number:', phoneNumber);
     const baseProfile = {
       name: user.name || this.getUserName(user.role),
-      location: user.profileData?.village || 'Warangal, Telangana',
-      phone: user.profileData?.mobileNo || '9876543210',
+      location: user.location || user.profileData?.village || user.profileData?.location || 'Warangal, Telangana',
+      phone: phoneNumber,
       language: 'తెలుగు',
       profileImage: user.profileData?.profileImage || 'assets/images/default-avatar.svg'
     };
@@ -53,9 +66,18 @@ export class UserProfileComponent implements OnInit {
         this.profileData = {
           ...baseProfile,
           roleSpecific: {
-            land: user.profileData?.acreOfLand + ' Acres' || '3 Acres',
+            // Pre-populate all signup data fields
+            land: (user.profileData?.acreOfLand ? user.profileData.acreOfLand + ' Acres' : '3 Acres'),
             crops: user.profileData?.typicalCrops || 'Rice, Maize',
-            soilType: user.profileData?.soilType || 'Black Soil'
+            soilType: user.profileData?.soilType || 'Black Soil',
+            village: user.profileData?.village || user.location || 'Warangal',
+            mandal: user.profileData?.mandal || 'N/A',
+            waterSource: user.profileData?.waterSource || 'Borewell',
+            fertilizers: user.profileData?.fertilizers || 'N/A',
+            soilTest: user.profileData?.soilTest || 'not-tested',
+            email: user.email || 'N/A',
+            userId: user.profileData?.userId || user.id || 'N/A',
+            createdAt: user.profileData?.createdAt || 'N/A'
           }
         };
         break;
@@ -121,22 +143,21 @@ export class UserProfileComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/homepage']);
+    this.authService.logout('/homepage');
   }
 
   private getDashboardRoute(): string {
-    if (!this.currentUser) return '/';
+    if (!this.currentUser) return '/homepage';
     
     switch (this.currentUser.role) {
       case APP_CONSTANTS.ROLES.FARMER:
-        return '/seller';
+        return '/farmer';
       case APP_CONSTANTS.ROLES.USER:
         return '/buyer';
       case APP_CONSTANTS.ROLES.ADMIN:
         return '/control';
       default:
-        return '/';
+        return '/homepage';
     }
   }
 }

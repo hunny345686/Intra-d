@@ -2,138 +2,411 @@
     <div class="row">
         <div class="col-md-2 d-none d-md-block sidebar p-0">
             <ul class="nav flex-column mt-2">
-                <li class="nav-item"><a class="nav-link active" (click)="setActiveView('dashboard')" style="cursor: pointer;"><i class="bi bi-house-door"></i> Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" (click)="navigateToFarmers()" style="cursor: pointer;"><i class="bi bi-person"></i> Farmers</a></li>
-                <li class="nav-item"><a class="nav-link" (click)="navigateToBuyers()" style="cursor: pointer;"><i class="bi bi-bag"></i> Buyers</a></li>
-                <li class="nav-item"><a class="nav-link" (click)="navigateToReports()" style="cursor: pointer;"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'dashboard'" (click)="setActiveView('dashboard')" style="cursor: pointer;"><i class="bi bi-house-door"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'farmers'" (click)="navigateToFarmers()" style="cursor: pointer;"><i class="bi bi-person"></i> Farmers</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'buyers'" (click)="navigateToBuyers()" style="cursor: pointer;"><i class="bi bi-bag"></i> Buyers</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'service-requests'" (click)="setActiveView('service-requests')" style="cursor: pointer;"><i class="bi bi-clipboard-check"></i> Service Requests</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'soil-tests'" (click)="setActiveView('soil-tests')" style="cursor: pointer;"><i class="bi bi-flask"></i> Soil Tests</a></li>
+                <li class="nav-item"><a class="nav-link" [class.active]="activeView === 'reports'" (click)="navigateToReports()" style="cursor: pointer;"><i class="bi bi-file-earmark-bar-graph"></i> Reports</a></li>
                 <li class="nav-item"><a class="nav-link" (click)="goBackToControl()" style="cursor: pointer;"><i class="bi bi-arrow-left"></i> Back to Control</a></li>
             </ul>
         </div>
 
         <div class="col-md-10 p-4">
-            <div class="row g-3 mb-4">
-                <div class="col-md-3 m-0">
-                    <div class="stat-card d-flex align-items-center">
-                        <div class="me-3 text-success"><i class="bi bi-person-badge stat-icon"></i></div>
-                        <div>
-                            <div class="text-muted small">Farmers</div>
-                            <h3 class="mb-0 fw-bold">1,284</h3>
-                            <span class="trend-text">• 24 today</span>
+            <!-- Dashboard View -->
+            <div *ngIf="activeView === 'dashboard'">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3 m-0">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="me-3 text-success"><i class="bi bi-person-badge stat-icon"></i></div>
+                            <div>
+                                <div class="text-muted small">Farmers</div>
+                                <h3 class="mb-0 fw-bold">{{ stats.totalFarmers }}</h3>
+                                <span class="trend-text">• {{ stats.totalFarmers > 0 ? (stats.totalFarmers * 0.02 | number:'1.0-0') : 0 }} today</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-0">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="me-3 text-success"><i class="bi bi-potted-plant stat-icon"></i></div>
+                            <div>
+                                <div class="text-muted small">Crops Available</div>
+                                <h3 class="mb-0 fw-bold">{{ stats.cropsAvailable | number }} <small class="h6">Kg</small></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-0">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="me-3 text-warning"><i class="bi bi-exclamation-triangle stat-icon"></i></div>
+                            <div>
+                                <div class="text-muted small">Urgent Crops</div>
+                                <h3 class="mb-0 fw-bold">{{ stats.urgentCrops | number }} <small class="h6">Kg</small></h3>
+                                <span class="trend-text">• {{ stats.urgentCrops > 0 ? (stats.urgentCrops * 0.004 | number:'1.0-0') : 0 }} today</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-0">
+                        <div class="stat-card d-flex align-items-center">
+                            <div class="me-3 text-success"><i class="bi bi-person-check stat-icon"></i></div>
+                            <div>
+                                <div class="text-muted small">Active Buyers</div>
+                                <h3 class="mb-0 fw-bold">{{ stats.activeBuyers }}</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 m-0">
-                    <div class="stat-card d-flex align-items-center">
-                        <div class="me-3 text-success"><i class="bi bi-potted-plant stat-icon"></i></div>
-                        <div>
-                            <div class="text-muted small">Crops Available</div>
-                            <h3 class="mb-0 fw-bold">35,200 <small class="h6">Kg</small></h3>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card data-card">
+                            <div class="card-header-custom">Crops Available</div>
+                            <div class="card-body">
+                                <table class="table table-borderless align-middle">
+                                    <thead>
+                                        <tr class="text-muted small">
+                                            <th>Crop Name</th>
+                                            <th class="text-end">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let crop of cropsAvailable">
+                                            <td>{{ crop.name }}</td>
+                                            <td class="text-end fw-bold">{{ crop.quantity | number }} Kg</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3 m-0">
-                    <div class="stat-card d-flex align-items-center">
-                        <div class="me-3 text-warning"><i class="bi bi-exclamation-triangle stat-icon"></i></div>
-                        <div>
-                            <div class="text-muted small">Urgent Crops</div>
-                            <h3 class="mb-0 fw-bold">6,300 <small class="h6">Kg</small></h3>
-                            <span class="trend-text">• 24 today</span>
+
+                    <div class="col-md-4">
+                        <div class="card data-card">
+                            <div class="card-header-custom">Crops Needed Urgently</div>
+                            <div class="card-body">
+                                <table class="table table-borderless align-middle">
+                                    <thead>
+                                        <tr class="text-muted small">
+                                            <th>Crop</th>
+                                            <th class="text-end">Timeframe</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let crop of urgentCrops">
+                                            <td>{{ crop.name }}</td>
+                                            <td class="text-end">
+                                                <span class="badge" 
+                                                      [ngClass]="crop.timeframe === '24 hrs' ? 'bg-warning-subtle text-warning' : 'bg-danger-subtle text-danger'" 
+                                                      class="urgent-badge">
+                                                    {{ crop.quantity | number }} Kg # {{ crop.timeframe }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-3 m-0">
-                    <div class="stat-card d-flex align-items-center">
-                        <div class="me-3 text-success"><i class="bi bi-person-check stat-icon"></i></div>
-                        <div>
-                            <div class="text-muted small">Active Buyers</div>
-                            <h3 class="mb-0 fw-bold">48</h3>
+
+                    <div class="col-md-4">
+                        <div class="card data-card">
+                            <div class="card-header-custom">Buyer Demand</div>
+                            <div class="card-body">
+                                <table class="table table-borderless align-middle">
+                                    <thead class="text-muted small">
+                                        <tr>
+                                            <th>Buyer Name</th>
+                                            <th>Bid</th>
+                                            <th>Ttl</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let demand of buyerDemands">
+                                            <td>{{ demand.name }}</td>
+                                            <td class="fw-bold">{{ demand.bid }}</td>
+                                            <td class="text-muted">{{ demand.ttl }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="mt-4">
+                                    <button class="btn btn-match" (click)="matchBuyerSeller()">Match Buyer & Seller</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card data-card">
-                        <div class="card-header-custom">Crops Available</div>
-                        <div class="card-body">
-                            <table class="table table-borderless align-middle">
-                                <thead>
-                                    <tr class="text-muted small">
-                                        <th>Crop Name</th>
-                                        <th class="text-end">Quantity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Onion</td>
-                                        <td class="text-end fw-bold">12,500 Kg</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tomato</td>
-                                        <td class="text-end fw-bold">8,200 Kg</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            <!-- Farmers View -->
+            <div *ngIf="activeView === 'farmers'">
+                <h2>Farmers Details</h2>
+                <div class="card data-card">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Village</th>
+                                    <th>Crops Produced</th>
+                                    <th>Land (Acres)</th>
+                                    <th>Water Source</th>
+                                    <th>Soil Type</th>
+                                    <th>Fertilizers</th>
+                                    <th>Mobile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let farmer of farmersData">
+                                    <td>{{ farmer.name }}</td>
+                                    <td>{{ farmer.village }}</td>
+                                    <td>{{ farmer.cropsProduced }}</td>
+                                    <td>{{ farmer.totalLand }}</td>
+                                    <td>{{ farmer.waterSource }}</td>
+                                    <td>{{ farmer.soilType }}</td>
+                                    <td>{{ farmer.fertilizers }}</td>
+                                    <td>{{ farmer.mobileNo }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buyers View -->
+            <div *ngIf="activeView === 'buyers'">
+                <h2>Buyers Details</h2>
+                <div class="card data-card">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Contact Person</th>
+                                    <th>Crop Required</th>
+                                    <th>Quantity</th>
+                                    <th>Budget</th>
+                                    <th>Delivery Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let buyer of buyersData">
+                                    <td>{{ buyer.companyName }}</td>
+                                    <td>{{ buyer.contactPerson }}</td>
+                                    <td>{{ buyer.cropRequired }}</td>
+                                    <td>{{ buyer.quantity }}</td>
+                                    <td>{{ buyer.budget }}</td>
+                                    <td>{{ buyer.deliveryDate }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div *ngIf="activeView === 'reports'">
+                <h2>Reports & Analytics</h2>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>Total Farmers</h4>
+                            <h2>{{ stats.totalFarmers }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>Total Buyers</h4>
+                            <h2>{{ stats.totalBuyers }}</h2>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-md-4">
-                    <div class="card data-card">
-                        <div class="card-header-custom">Crops Needed Urgently</div>
-                        <div class="card-body">
-                            <table class="table table-borderless align-middle">
-                                <thead>
-                                    <tr class="text-muted small">
-                                        <th>Crop</th>
-                                        <th class="text-end">Timeframe</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Chilli</td>
-                                        <td class="text-end"><span class="badge bg-warning-subtle text-warning urgent-badge">1,800 Kg # 24 hrs</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Onion</td>
-                                        <td class="text-end"><span class="badge bg-danger-subtle text-danger urgent-badge">4,500 Kg # 48 hrs</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            <!-- Service Requests View -->
+            <div *ngIf="activeView === 'service-requests'">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-clipboard-check"></i> Service Requests</h2>
+                    <button class="btn btn-primary" (click)="loadServiceRequests()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+
+                <div *ngIf="loading" class="text-center py-5">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Loading service requests...</p>
+                </div>
+
+                <div *ngIf="!loading && serviceRequests.length === 0" class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No service requests found.
+                </div>
+
+                <div *ngIf="!loading && serviceRequests.length > 0" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Farmer Name</th>
+                                <th>Mobile</th>
+                                <th>Service Type</th>
+                                <th>Equipment</th>
+                                <th>Preferred Date</th>
+                                <th>Status</th>
+                                <th>Submitted</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let request of serviceRequests">
+                                <td><code>{{ request.requestId || request.id }}</code></td>
+                                <td>{{ request.farmerName }}</td>
+                                <td>{{ request.mobileNumber }}</td>
+                                <td><span class="badge bg-primary">{{ request.serviceName }}</span></td>
+                                <td>{{ request.selectedEquipment || 'N/A' }}</td>
+                                <td>{{ request.preferredDate }}</td>
+                                <td>
+                                    <span class="badge" 
+                                          [ngClass]="{
+                                            'bg-warning': request.status === 'pending',
+                                            'bg-success': request.status === 'approved',
+                                            'bg-danger': request.status === 'rejected',
+                                            'bg-info': request.status === 'completed'
+                                          }">
+                                        {{ request.status || 'pending' }}
+                                    </span>
+                                </td>
+                                <td>{{ request.submittedAt | date:'short' }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-success" (click)="updateRequestStatus(request.id, 'approved', 'service')" 
+                                                [disabled]="request.status === 'approved'">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="updateRequestStatus(request.id, 'rejected', 'service')"
+                                                [disabled]="request.status === 'rejected'">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Soil Test Requests View -->
+            <div *ngIf="activeView === 'soil-tests'">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-flask"></i> Soil Test Requests</h2>
+                    <button class="btn btn-primary" (click)="loadSoilTestRequests()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+
+                <div *ngIf="loading" class="text-center py-5">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Loading soil test requests...</p>
+                </div>
+
+                <div *ngIf="!loading && soilTestRequests.length === 0" class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> No soil test requests found.
+                </div>
+
+                <div *ngIf="!loading && soilTestRequests.length > 0" class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Farmer Name</th>
+                                <th>Mobile</th>
+                                <th>Village</th>
+                                <th>Land Area</th>
+                                <th>Current Crop</th>
+                                <th>Sample Date</th>
+                                <th>Status</th>
+                                <th>Location</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let request of soilTestRequests">
+                                <td>{{ request.farmerName }}</td>
+                                <td>{{ request.mobileNumber }}</td>
+                                <td>{{ request.village }}</td>
+                                <td>{{ request.landArea }} acres</td>
+                                <td>{{ request.currentCrop }}</td>
+                                <td>{{ request.sampleDate }}</td>
+                                <td>
+                                    <span class="badge" 
+                                          [ngClass]="{
+                                            'bg-warning': request.status === 'REQUESTED' || request.status === 'pending',
+                                            'bg-success': request.status === 'COMPLETED' || request.status === 'approved',
+                                            'bg-danger': request.status === 'rejected',
+                                            'bg-info': request.status === 'IN_PROGRESS'
+                                          }">
+                                        {{ request.status || 'REQUESTED' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span *ngIf="request.location" class="badge bg-secondary">
+                                        <i class="bi bi-geo-alt"></i> {{ request.location.latitude | number:'1.4-4' }}, {{ request.location.longitude | number:'1.4-4' }}
+                                    </span>
+                                    <span *ngIf="!request.location" class="text-muted">N/A</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-success" (click)="updateRequestStatus(request.id, 'approved', 'soil')"
+                                                [disabled]="request.status === 'approved' || request.status === 'COMPLETED'">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                        <button class="btn btn-danger" (click)="updateRequestStatus(request.id, 'rejected', 'soil')"
+                                                [disabled]="request.status === 'rejected'">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reports View (continued) -->
+            <div *ngIf="activeView === 'reports'">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>Crops Available</h4>
+                            <h2>{{ stats.cropsAvailable | number }} Kg</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <h4>Urgent Crops</h4>
+                            <h2>{{ stats.urgentCrops | number }} Kg</h2>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card data-card">
-                        <div class="card-header-custom">Buyer Demand</div>
-                        <div class="card-body">
-                            <table class="table table-borderless align-middle">
-                                <thead class="text-muted small">
-                                    <tr>
-                                        <th>Buyer Name</th>
-                                        <th>Bid</th>
-                                        <th>Ttl</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>FreshMart</td>
-                                        <td class="fw-bold">₹3,000</td>
-                                        <td class="text-muted">3 days</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tomato</td>
-                                        <td class="fw-bold">₹1,500</td>
-                                        <td class="text-muted">Tomorrow</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="mt-4">
-                                <button class="btn btn-match">Match Buyer & Seller</button>
-                            </div>
-                        </div>
+                <div class="card data-card">
+                    <div class="card-body">
+                        <h5>Crop Production Summary</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Crop Name</th>
+                                    <th>Total Quantity</th>
+                                    <th>Farmers Producing</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let crop of cropsAvailable">
+                                    <td>{{ crop.name }}</td>
+                                    <td>{{ crop.quantity | number }} Kg</td>
+                                    <td>{{ (crop.quantity / 1000) | number:'1.0-0' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

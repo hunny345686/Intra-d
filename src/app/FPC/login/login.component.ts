@@ -29,26 +29,20 @@ export class LoginComponent {
   ) {}
 
   private redirectByRole(): void {
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        switch (user.role) {
-          case 'admin':
-            this.router.navigate(['/control']);
-            break;
-          case 'farmer':
-            this.router.navigate(['/seller']);
-            break;
-          case 'user':
-            this.router.navigate(['/buyer']);
-            break;
-          default:
-            this.router.navigate(['/']);
-        }
-      }
-    }).unsubscribe();
+    const dashboardRoute = this.authService.getDashboardRoute();
+    this.router.navigate([dashboardRoute]);
   }
 
   handleLogin(): void {
+    if (!this.loginHtmlForm.valid) {
+      this.loginHtmlForm.form.markAllAsTouched();
+      return;
+    }
+    
+    this.performLogin();
+  }
+
+  performLogin(): void {
     if (!this.loginHtmlForm.valid) {
       this.loginHtmlForm.form.markAllAsTouched();
       return;

@@ -172,9 +172,78 @@
 
 /* Main Layout */
 .container {
-  display: flex;
-  gap: 20px;
   padding: 20px;
+}
+
+/* Back Navigation */
+.back-navigation {
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.back-navigation .btn-back.ml-2{
+    margin-right: 8px ;
+  }
+
+.btn-back,
+.btn-dashboard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px solid #28a745;
+  background: white;
+  color: #28a745;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+  min-width: auto;
+  width: auto;
+  max-width: fit-content;
+}
+
+.btn-back:hover,
+.btn-dashboard:hover {
+  background: #28a745;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-dashboard {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.btn-dashboard:hover {
+  background: #007bff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn-back i,
+.btn-dashboard i {
+  font-size: 14px;
+}
+
+/* Content Layout */
+.container {
+  display: block;
+}
+
+.container > .left-panel,
+.container > .right-panel {
+  display: inline-block;
+}
+
+@media (min-width: 769px) {
+  .container {
+    display: flex;
+    gap: 20px;
+  }
 }
 
 /* Left Panel */
@@ -260,5 +329,23 @@
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
+  }
+
+  .back-navigation {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  
+
+  .btn-back,
+  .btn-dashboard {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .btn-back i,
+  .btn-dashboard i {
+    font-size: 12px;
   }
 }

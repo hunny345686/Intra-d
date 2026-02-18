@@ -29,6 +29,18 @@ interface RentData {
   equipmentType: string;
   duration: string;
 }
+
+interface SoilTestData {
+  farmerName: string;
+  mobileNumber: string;
+  village: string;
+  landArea: number | null;
+  irrigationType: string;
+  currentCrop: string;
+  previousCrop: string;
+  sampleDate: string;
+  problemDescription: string;
+}
 @Component({
   selector: 'app-service-info',
   standalone: true,
@@ -57,8 +69,22 @@ export class ServiceInfoComponent implements OnInit {
     duration: '',
   };
 
+  // Soil test form data
+  soilTestData: SoilTestData = {
+    farmerName: '',
+    mobileNumber: '',
+    village: '',
+    landArea: null,
+    irrigationType: '',
+    currentCrop: '',
+    previousCrop: '',
+    sampleDate: '',
+    problemDescription: ''
+  };
+
   @ViewChild('leaseForm') leaseHtmlForm!: NgForm;
   @ViewChild('rentForm') rentHtmlForm!: NgForm;
+  @ViewChild('soilForm') soilHtmlForm!: NgForm;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -70,6 +96,13 @@ export class ServiceInfoComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.subscribe((user) => {
       this.currentUser = user;
+      
+      // Pre-populate soil test form with user data
+      if (user) {
+        this.soilTestData.farmerName = user.name || '';
+        this.soilTestData.mobileNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
+        this.soilTestData.village = user.profileData?.village || user.location || '';
+      }
     });
 
     if (isPlatformBrowser(this.platformId)) {
@@ -177,7 +210,35 @@ export class ServiceInfoComponent implements OnInit {
     this.rentHtmlForm.resetForm(); // Reset the form using NgForm reference
   }
 
+  /**
+   * Handles Soil Test Form submission.
+   */
+  handleSoilTestSubmission(): void {
+    if (!this.currentUser || this.soilHtmlForm.invalid) return;
+    
+    const submissionData = {
+      ...this.soilTestData,
+      userId: this.currentUser.id,
+      email: this.currentUser.email,
+      submittedAt: new Date().toISOString()
+    };
+
+    console.log('Soil Test Form Submitted:', submissionData);
+    // In a real application, send this data to your backend API.
+
+    // Show success modal
+    const successModalElement = this.document.getElementById('successModalDashboard');
+    if (successModalElement) {
+      const successModal = bootstrap.Modal.getInstance(successModalElement) || new bootstrap.Modal(successModalElement);
+      this.document.getElementById('successModalLabelDashboard')!.textContent = 'Soil Test Request Submitted';
+      (this.document.querySelector('#successModalDashboard .modal-body') as HTMLElement).textContent = 'Your soil test request has been submitted successfully!';
+      successModal.show();
+    }
+    
+    this.soilHtmlForm.resetForm();
+  }
+
   logout(): void {
-    this.authService.logout();
+    this.authService.logout('/homepage');
   }
 }

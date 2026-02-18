@@ -28,7 +28,6 @@ export class FarmerDashboardComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/homepage']);
+    this.authService.logout('/homepage');
   }
 }

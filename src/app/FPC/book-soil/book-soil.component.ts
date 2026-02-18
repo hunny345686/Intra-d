@@ -1,9 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { GeoLocationService } from '../../services/geo-location.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslatePipe } from '../../shared/translate.pipe';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-book-soil',
   standalone: true,
@@ -11,7 +13,7 @@ import { TranslatePipe } from '../../shared/translate.pipe';
   templateUrl: './book-soil.component.html',
   styleUrl: './book-soil.component.css',
 })
-export class BookSoilComponent {
+export class BookSoilComponent implements OnInit {
 
   
   
@@ -38,7 +40,40 @@ export class BookSoilComponent {
     problemDescription: ''
   };
 
-  constructor(private geoService: GeoLocationService, private http: HttpClient) {}
+  constructor(
+    private geoService: GeoLocationService, 
+    private http: HttpClient,
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    // Pre-populate form with user data if logged in
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.soilTestForm.farmerName = user.name || '';
+        this.soilTestForm.mobileNumber = user.phone || user.profileData?.mobileNo || user.profileData?.phone || '';
+        this.soilTestForm.village = user.profileData?.village || user.location || '';
+      }
+    });
+  }
+
+  goBack(): void {
+    // Check if user is a farmer and navigate to farmer dashboard
+    this.authService.currentUser$.subscribe(user => {
+      if (user?.role === 'farmer') {
+        this.router.navigate(['/farmer']);
+      } else {
+        // Otherwise go back in history
+        window.history.back();
+      }
+    }).unsubscribe();
+  }
+
+  goToFarmerDashboard(): void {
+    this.router.navigate(['/farmer']);
+  }
 
   /**
    * Handle form submission

@@ -5,7 +5,16 @@
 
 <!-- Main Layout -->
 <div class="container">
-    <!-- <h2>Advantages</h2> -->
+    <!-- Back Navigation -->
+    <div class="back-navigation">
+        <button class="btn-back ml-2" (click)="goBack()" title="Go Back">
+            <i class="bi bi-arrow-left"></i> Back
+        </button>
+        <button class="btn-dashboard" (click)="goToFarmerDashboard()" title="Go to Farmer Dashboard">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </button>
+    </div>
+
     <!-- Left Section -->
     <section class="left-panel">
         <h2>{{ 'soil.benefits' | translate }}</h2>

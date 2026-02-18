@@ -1,0 +1,274 @@
+<div class="farmer-dashboard">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <div>
+        <h1>Welcome, {{ currentUser?.name || 'Farmer' }}! 🌾</h1>
+        <p class="text-muted mb-0">{{ currentUser?.location || 'Warangal, Telangana' }}</p>
+      </div>
+      <button class="btn btn-danger" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Dashboard View -->
+  <div class="dashboard-content" *ngIf="currentView === 'dashboard'">
+    <!-- Services & Packages - PRIORITY SECTION -->
+    <div class="section-card mb-4">
+      <h2 class="section-title">Services & Packages 📦</h2>
+      <p class="text-muted mb-4">Choose from our range of services designed to help you succeed</p>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" *ngFor="let package of servicePackages">
+          <div class="service-package-card" [class.popular]="package.popular">
+            <div class="package-badge" *ngIf="package.popular">
+              <span>⭐ Popular</span>
+            </div>
+            <div class="package-icon">{{ package.icon }}</div>
+            <h3 class="package-name">{{ package.name }}</h3>
+            <p class="package-description">{{ package.description }}</p>
+            <div class="package-price">{{ package.price }}</div>
+            <ul class="package-features">
+              <li *ngFor="let feature of package.features">
+                <i class="bi bi-check-circle-fill"></i> {{ feature }}
+              </li>
+            </ul>
+            <button class="btn btn-primary w-100 mt-3" (click)="selectPackage(package.id)">
+              Select Package
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-6 col-lg-3" *ngFor="let card of dashboardCards">
+        <div class="dashboard-card" [style.border-left-color]="card.color">
+          <div class="card-icon">{{ card.icon }}</div>
+          <div class="card-content">
+            <h3>{{ card.value }}</h3>
+            <p class="card-title">{{ card.title }}</p>
+            <small class="text-muted">{{ card.description }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-card mb-4">
+      <h2 class="section-title">Quick Actions</h2>
+      <div class="row g-3">
+        <div class="col-md-4 col-lg-2" *ngFor="let action of quickActions">
+          <div class="quick-action-card" (click)="navigateTo(action.route)">
+            <div class="action-icon">{{ action.icon }}</div>
+            <h4>{{ action.title }}</h4>
+            <p>{{ action.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section-card">
+      <h2 class="section-title">Recent Activity</h2>
+      <div class="activity-list">
+        <div class="activity-item" *ngFor="let activity of recentActivities">
+          <span class="activity-icon">{{ activity.icon }}</span>
+          <div class="activity-content">
+            <p class="mb-0">{{ activity.action }}</p>
+            <small class="text-muted">{{ activity.time }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Farmer Information -->
+    <div class="section-card mt-4" *ngIf="currentUser?.profileData">
+      <h2 class="section-title">Farm Details</h2>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="info-item">
+            <strong>Village:</strong> {{ currentUser?.profileData?.village || 'N/A' }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info-item">
+            <strong>Mandal:</strong> {{ currentUser?.profileData?.mandal || 'N/A' }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info-item">
+            <strong>Soil Type:</strong> {{ currentUser?.profileData?.soilType || 'N/A' }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info-item">
+            <strong>Fertilizers:</strong> {{ currentUser?.profileData?.fertilizers || 'N/A' }}
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="info-item">
+            <strong>Typical Crops:</strong> {{ currentUser?.profileData?.typicalCrops || 'N/A' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Request Form View -->
+  <div class="dashboard-content" *ngIf="currentView === 'service-form'">
+    <div class="section-card">
+      <!-- Back Button -->
+      <button class="btn btn-outline-secondary mb-4" (click)="backToDashboard()">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </button>
+
+      <!-- Selected Service Info -->
+      <div class="selected-service-header" *ngIf="selectedService">
+        <div class="service-header-icon">{{ selectedService.icon }}</div>
+        <div>
+          <h2 class="mb-2">{{ selectedService.name }}</h2>
+          <p class="text-muted mb-0">{{ selectedService.description }}</p>
+          <p class="service-price-large">{{ selectedService.price }}</p>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <!-- Equipment Catalog (Only for Equipment Rental) -->
+      <div class="equipment-catalog" *ngIf="selectedService?.id === 'equipment-rental' && selectedService?.equipmentList">
+        <h3 class="mb-4">Available Equipment</h3>
+        <div class="row g-4 mb-4">
+          <div class="col-md-6 col-lg-4" *ngFor="let equipment of selectedService?.equipmentList">
+            <div class="equipment-card">
+              <div class="equipment-icon">{{ equipment.icon }}</div>
+              <h4 class="equipment-name">{{ equipment.name }}</h4>
+              <p class="equipment-description">{{ equipment.description }}</p>
+              <div class="equipment-price">{{ equipment.pricePerDay }}/day</div>
+              <div class="equipment-specs" *ngIf="equipment.specifications">
+                <h6>Specifications:</h6>
+                <ul>
+                  <li *ngFor="let spec of equipment.specifications">
+                    <i class="bi bi-check2"></i> {{ spec }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="my-4">
+      </div>
+
+      <!-- Service Request Form -->
+      <h3 class="mb-4">Request Service</h3>
+      <form (ngSubmit)="submitServiceRequest()">
+        <div class="row g-3">
+          <!-- Farmer Name -->
+          <div class="col-md-6">
+            <label class="form-label">Farmer Name <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="serviceForm.farmerName"
+              name="farmerName"
+              required
+              placeholder="Enter your name">
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="col-md-6">
+            <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+            <input 
+              type="tel" 
+              class="form-control" 
+              [(ngModel)]="serviceForm.mobileNumber"
+              name="mobileNumber"
+              required
+              maxlength="10"
+              placeholder="Enter 10-digit mobile number">
+          </div>
+
+          <!-- Village -->
+          <div class="col-md-6">
+            <label class="form-label">Village</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="serviceForm.village"
+              name="village"
+              placeholder="Enter your village">
+          </div>
+
+          <!-- Service Type (Read-only) -->
+          <div class="col-md-6">
+            <label class="form-label">Service Type</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="serviceForm.serviceType"
+              name="serviceType"
+              readonly>
+          </div>
+
+          <!-- Preferred Date -->
+          <div class="col-md-6">
+            <label class="form-label">Preferred Date <span class="text-danger">*</span></label>
+            <input 
+              type="date" 
+              class="form-control" 
+              [(ngModel)]="serviceForm.preferredDate"
+              name="preferredDate"
+              required
+              [min]="getTodayDate()">
+          </div>
+
+          <!-- Equipment Selection (Only for Equipment Rental) -->
+          <div class="col-md-6" *ngIf="selectedService?.id === 'equipment-rental'">
+            <label class="form-label">Select Equipment <span class="text-danger">*</span></label>
+            <select 
+              class="form-control" 
+              [(ngModel)]="serviceForm.selectedEquipment"
+              name="selectedEquipment"
+              required>
+              <option value="">Choose equipment...</option>
+              <option *ngFor="let equipment of selectedService?.equipmentList" [value]="equipment.name">
+                {{ equipment.name }} - {{ equipment.pricePerDay }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Additional Notes -->
+          <div class="col-12">
+            <label class="form-label">Additional Notes</label>
+            <textarea 
+              class="form-control" 
+              [(ngModel)]="serviceForm.additionalNotes"
+              name="additionalNotes"
+              rows="4"
+              placeholder="Any specific requirements or questions..."></textarea>
+          </div>
+
+          <!-- Service Features Reminder -->
+          <div class="col-12" *ngIf="selectedService">
+            <div class="features-reminder">
+              <h5>What's Included:</h5>
+              <ul>
+                <li *ngFor="let feature of selectedService.features">
+                  <i class="bi bi-check-circle-fill text-success"></i> {{ feature }}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="col-12">
+            <button type="submit" class="btn btn-success btn-lg w-100">
+              <i class="bi bi-send"></i> Submit Service Request
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

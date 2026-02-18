@@ -44,7 +44,7 @@ export class HomepageComponent {
   }
 
   handleLogout(): void {
-    this.authService.logout();
+    this.authService.logout('/homepage');
   }
 
   setComingSoonFeature(feature: string): void {

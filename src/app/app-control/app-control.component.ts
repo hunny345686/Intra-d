@@ -4,6 +4,7 @@ import { AuthService, User } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { AdminDashboardComponent } from './admin-dashboard.component';
 
 type ViewType = 'control' | 'admin';
 
@@ -20,7 +21,7 @@ interface AppCard {
 @Component({
   selector: 'app-control',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AdminDashboardComponent],
   templateUrl: './app-control.component.html',
   styleUrls: ['./app-control.component.css', './admin-dashboard.component.css']
 })
@@ -84,15 +85,15 @@ export class AppControlComponent implements OnInit, OnDestroy {
   }
 
   navigateToFarmers(): void {
-    this.router.navigate(['/seller']);
+    // This will be handled by the admin dashboard component
   }
 
   navigateToBuyers(): void {
-    this.router.navigate(['/buyer']);
+    // This will be handled by the admin dashboard component
   }
 
   navigateToReports(): void {
-    this.router.navigate(['/report']);
+    // This will be handled by the admin dashboard component
   }
 
   goBackToControl(): void {
@@ -137,7 +138,6 @@ export class AppControlComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/homepage']);
+    this.authService.logout('/homepage');
   }
 }

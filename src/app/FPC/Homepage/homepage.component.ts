@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, timeout, retry } from 'rxjs/operators';
+import { catchError, timeout, retry, switchMap } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -11,7 +11,9 @@ import { ServiceInfoComponent } from '../service-info/service-info.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthService, User } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
+import { OtpService } from '../../services/otp.service';
 import { TranslatePipe } from '../../shared/translate.pipe';
+import { OtpVerificationComponent } from '../../shared/otp-verification/otp-verification.component';
 
 declare var bootstrap: any;
 
@@ -40,7 +42,7 @@ interface WeatherData {
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, LoginComponent, TranslatePipe],
+  imports: [CommonModule, FormsModule, RouterModule, ServiceInfoComponent, LoginComponent, TranslatePipe, OtpVerificationComponent],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.css']
 })
@@ -66,6 +68,16 @@ export class HomepageComponent implements OnInit, OnDestroy {
     acreOfLand: null, fertilizers: '', role: ''
   };
 
+  showOtpModal: boolean = false;
+  isMobileVerified: boolean = false;
+  showOtpField: boolean = false;
+  otpCode: string = '';
+  otpSent: boolean = false;
+  isVerifyingOtp: boolean = false;
+  isSendingOtp: boolean = false;
+  otpMessage: string = '';
+  otpMessageType: 'success' | 'danger' = 'danger';
+
   forgotPasswordData = {
     email: '',
     password: '',
@@ -81,7 +93,8 @@ export class HomepageComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly http: HttpClient,
-    private readonly firebaseService: FirebaseService
+    private readonly firebaseService: FirebaseService,
+    private readonly otpService: OtpService
   ) {
     console.log('HomepageComponent initialized');
   }
@@ -149,7 +162,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
   }
 
   handleLogout(): void {
-    this.authService.logout();
+    this.authService.logout('/homepage');
     console.log('User logged out');
   }
 
@@ -278,6 +291,107 @@ export class HomepageComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Check if mobile verification is required
+    if (!this.isMobileVerified) {
+      if (!this.otpSent) {
+        // Send OTP first
+        this.sendOtpForVerification();
+      } else {
+        // OTP sent but not verified
+        this.otpMessage = 'Please verify the OTP sent to your mobile number';
+        this.otpMessageType = 'danger';
+      }
+      return;
+    }
+
+    this.performSignup();
+  }
+
+  sendOtpForVerification(): void {
+    if (!this.signupData.mobileNo) {
+      this.otpMessage = 'Please enter mobile number first.';
+      this.otpMessageType = 'danger';
+      return;
+    }
+    
+    this.isSendingOtp = true;
+    this.otpMessage = '';
+    
+    console.log('Sending OTP to:', this.signupData.mobileNo);
+    this.otpService.sendOtp(this.signupData.mobileNo).subscribe({
+      next: () => {
+        console.log('OTP sent successfully');
+        this.showOtpField = true;
+        this.otpSent = true;
+        this.isSendingOtp = false;
+        this.otpMessage = `OTP sent to ${this.signupData.mobileNo}`;
+        this.otpMessageType = 'success';
+      },
+      error: (error) => {
+        console.error('Failed to send OTP:', error);
+        this.isSendingOtp = false;
+        this.otpMessage = 'Failed to send OTP. Please try again.';
+        this.otpMessageType = 'danger';
+      }
+    });
+  }
+
+  verifyOtpInline(): void {
+    if (this.otpCode.length !== 6) {
+      this.otpMessage = 'Please enter a valid 6-digit OTP';
+      this.otpMessageType = 'danger';
+      return;
+    }
+    
+    this.isVerifyingOtp = true;
+    this.otpMessage = '';
+    
+    this.otpService.verifyOtp(this.signupData.mobileNo, this.otpCode).subscribe({
+      next: (isValid) => {
+        this.isVerifyingOtp = false;
+        if (isValid) {
+          this.isMobileVerified = true;
+          this.otpMessage = 'Mobile number verified successfully!';
+          this.otpMessageType = 'success';
+        } else {
+          this.otpMessage = 'Invalid OTP. Please try again.';
+          this.otpMessageType = 'danger';
+        }
+      },
+      error: (error) => {
+        console.error('OTP verification error:', error);
+        this.isVerifyingOtp = false;
+        this.otpMessage = 'Verification failed. Please try again.';
+        this.otpMessageType = 'danger';
+      }
+    });
+  }
+
+  resendOtpInline(): void {
+    this.otpCode = '';
+    this.otpMessage = '';
+    this.sendOtpForVerification();
+  }
+
+  onOtpVerified(verified: boolean): void {
+    if (verified) {
+      this.isMobileVerified = true;
+      this.showOtpModal = false;
+      this.performSignup();
+    }
+  }
+
+  onOtpModalClosed(): void {
+    this.showOtpModal = false;
+  }
+
+  performSignup(): void {
+    if (this.signupHtmlForm.invalid) {
+      this.signupHtmlForm.form.markAllAsTouched();
+      console.warn('Invalid signup form submission');
+      return;
+    }
+
     const sanitizedData = {
       ...this.signupData,
       name: this.signupData.name.replace(/[<>]/g, '').trim(),
@@ -366,12 +480,42 @@ export class HomepageComponent implements OnInit, OnDestroy {
 
   handleForgotPassword(): void {
     if (this.forgotHtmlForm.invalid) {
+      this.forgotHtmlForm.form.markAllAsTouched();
       console.warn('Invalid forgot password form submission');
       return;
     }
-    console.log('Forgot password form submitted');
-    alert('Password reset request submitted!');
-    this.hideModal('forgotPassModal');
-    this.forgotHtmlForm.resetForm();
+
+    if (this.forgotPasswordData.password !== this.forgotPasswordData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    console.log('Processing password reset for:', this.forgotPasswordData.email);
+    
+    this.firebaseService.updateUserPassword(this.forgotPasswordData.email, this.forgotPasswordData.password)
+      .pipe(
+        timeout(this.API_TIMEOUT),
+        catchError((error: any) => {
+          console.error('Password reset error:', error);
+          return of(null);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response) {
+            console.log('Password updated successfully');
+            alert('Password updated successfully! You can now login with your new password.');
+            this.hideModal('forgotPassModal');
+            this.forgotHtmlForm.resetForm();
+          } else {
+            alert('User not found or password update failed.');
+          }
+        },
+        error: (error: any) => {
+          console.error('Password reset subscription error:', error);
+          alert('Password reset failed. Please try again.');
+        }
+      });
   }
 }

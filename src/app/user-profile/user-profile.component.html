@@ -54,6 +54,48 @@
     </div>
   </div>
 
+  <!-- Farm Details Section -->
+  <div class="farm-details-section" *ngIf="currentUser.role === 'farmer'">
+    <h3 class="section-title">Farm Details</h3>
+    <div class="detail-item">
+      <span class="detail-icon">🏘️</span>
+      <div class="detail-content">
+        <div class="detail-label">Village</div>
+        <div class="detail-value">{{ profileData.roleSpecific.village }}</div>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="detail-icon">📍</span>
+      <div class="detail-content">
+        <div class="detail-label">Mandal</div>
+        <div class="detail-value">{{ profileData.roleSpecific.mandal }}</div>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="detail-icon">💧</span>
+      <div class="detail-content">
+        <div class="detail-label">Water Source</div>
+        <div class="detail-value">{{ profileData.roleSpecific.waterSource }}</div>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="detail-icon">🌿</span>
+      <div class="detail-content">
+        <div class="detail-label">Fertilizers</div>
+        <div class="detail-value">{{ profileData.roleSpecific.fertilizers }}</div>
+      </div>
+    </div>
+    <div class="detail-item">
+      <span class="detail-icon">🧪</span>
+      <div class="detail-content">
+        <div class="detail-label">Soil Test Status</div>
+        <div class="detail-value" [ngClass]="{'status-tested': profileData.roleSpecific.soilTest === 'tested', 'status-not-tested': profileData.roleSpecific.soilTest === 'not-tested'}">
+          {{ profileData.roleSpecific.soilTest === 'tested' ? 'Tested ✓' : 'Not Tested' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Quick Actions -->
   <div class="quick-actions" *ngIf="currentUser.role === 'farmer'">
     <div class="action-row">
@@ -93,6 +135,11 @@
   <!-- Account Section -->
   <div class="account-section">
     <h3 class="section-title">Account</h3>
+    <div class="account-item">
+      <span class="account-icon">📧</span>
+      <span class="account-label">{{ currentUser.email }}</span>
+      <span class="account-arrow">›</span>
+    </div>
     <div class="account-item">
       <span class="account-icon">📞</span>
       <span class="account-label">{{ profileData.phone }}</span>

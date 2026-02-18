@@ -12,10 +12,14 @@ import { ProductDetailComponent } from './FPC/product-detail/product-detail.comp
 
 // Dashboard Components
 import { UserDashboardComponent } from './dashboards/user-dashboard.component';
-import { FarmerDashboardComponent } from './dashboards/farmer-dashboard.component';
+import { FarmerDashboardComponent } from './dashboards/farmer-dashboard/farmer-dashboard.component';
 import { AppControlComponent } from './app-control/app-control.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ReportComponent } from './report/report.component';
+
+// Error Components
+import { UnauthorizedComponent } from './shared/components/unauthorized/unauthorized.component';
+import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 
 // Guards
 import { RoleGuard } from './guards/role.guard';
@@ -51,7 +55,7 @@ export const routes: Routes = [
     loadChildren: () => import('./APU/apu.routes').then(m => m.APU_ROUTES)
   },
   {
-    path: 'seller',
+    path: 'farmer',
     component: FarmerDashboardComponent,
     canActivate: [RoleGuard],
     data: { role: 'farmer' }
@@ -68,5 +72,8 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   
-  { path: '**', redirectTo: '' }
+  // Error Routes
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: '404', component: NotFoundComponent },
+  { path: '**', component: NotFoundComponent }
 ];

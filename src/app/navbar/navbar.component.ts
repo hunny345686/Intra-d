@@ -89,9 +89,8 @@ export class NavbarComponent {
       }
     }
     
-    // Logout and navigate to homepage
-    this.authService.logout();
-    this.router.navigate(['/homepage']);
+    // Logout and navigate to homepage (handled by auth service)
+    this.authService.logout('/homepage');
   }
 
   isControlPage(): boolean {

@@ -18,7 +18,7 @@ export class AboutUsComponent {
     },
 
     {
-      name: 'B Vamseedhara Reddy',
+      name: 'B Vamsee dhara Reddy',
       role: 'CTO',
       imageUrl: 'assets/images/vamshi.jpeg',
     },
