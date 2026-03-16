@@ -24,8 +24,6 @@
 .homepage-content-wrapper {
   padding: 20px;
   animation: fadeInUp 0.8s ease-out;
-  z-index: -1;
-  position: relative;
 }
 
 /* Category Cards with Agricultural Theme */
