@@ -79,8 +79,26 @@
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
   .seller-form-container {
-    padding: 1.5rem;
-    margin: 1.5rem auto;
+    padding: 1.25rem;
+    margin: 1rem auto;
+    border-radius: 0.75rem;
+  }
+  .display-5 {
+    font-size: 1.5rem;
+  }
+  .btn-primary-green.btn-lg {
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .seller-form-container {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
   }
 }
 

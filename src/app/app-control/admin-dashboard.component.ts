@@ -46,6 +46,16 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   soilTestRequests: any[] = [];
   loading = true;
 
+  // Pagination
+  currentPage = 1;
+  pageSize = 10;
+  totalItems = 0;
+  totalPages = 0;
+  paginatedServiceRequests: any[] = [];
+  paginatedSoilTests: any[] = [];
+  paginatedFarmers: any[] = [];
+  paginatedBuyers: any[] = [];
+
   constructor(
     private router: Router,
     private firebaseService: FirebaseService
@@ -70,12 +80,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         console.log('Users response:', users);
         if (users) {
           const userList = Object.values(users).flat();
-          const farmers = userList.filter((user: any) => 
-            user.role === 'farmer' || !user.role
-          );
-          const sellers = userList.filter((user: any) => 
-            user.role === 'seller'
-          );
+          const farmers = userList.filter((user: any) => user.role === 'farmer');
+          const sellers = userList.filter((user: any) => user.role === 'seller' || user.role === 'user');
           
           this.stats.totalFarmers = farmers.length;
           this.stats.totalBuyers = sellers.length;
@@ -165,9 +171,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         console.log('Farmers data received:', users);
         if (users) {
           const userList = Object.values(users).flat();
-          this.farmersData = userList.filter((user: any) => 
-            user.role === 'farmer' || !user.role
-          ).map((farmer: any) => ({
+          this.farmersData = userList.filter((user: any) => user.role === 'farmer').map((farmer: any) => ({
             ...farmer,
             totalLand: farmer.acreOfLand || 0,
             cropsProduced: farmer.typicalCrops || 'N/A',
@@ -177,6 +181,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           }));
           console.log('Processed farmers data:', this.farmersData);
         }
+        this.currentPage = 1;
+        this.updatePagination();
         this.loading = false;
       },
       error: (error: any) => {
@@ -236,6 +242,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         }
         
         console.log('Processed buyers data:', this.buyersData);
+        this.currentPage = 1;
+        this.updatePagination();
         this.loading = false;
       },
       error: (error: any) => {
@@ -260,6 +268,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         } else {
           this.serviceRequests = [];
         }
+        this.currentPage = 1;
+        this.updatePagination();
         console.log('Processed service requests:', this.serviceRequests);
         this.loading = false;
       },
@@ -286,6 +296,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         } else {
           this.soilTestRequests = [];
         }
+        this.currentPage = 1;
+        this.updatePagination();
         console.log('Processed soil test requests:', this.soilTestRequests);
         this.loading = false;
       },
@@ -351,5 +363,43 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   matchBuyerSeller() {
     console.log('Matching buyers and sellers...');
+  }
+
+  private updatePagination() {
+    const sourceMap: Record<string, any[]> = {
+      'service-requests': this.serviceRequests,
+      'soil-tests': this.soilTestRequests,
+      'farmers': this.farmersData,
+      'buyers': this.buyersData
+    };
+    const source = sourceMap[this.activeView] || [];
+    this.totalItems = source.length;
+    this.totalPages = Math.ceil(this.totalItems / this.pageSize) || 1;
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    const sliced = source.slice(start, end);
+    if (this.activeView === 'service-requests') this.paginatedServiceRequests = sliced;
+    else if (this.activeView === 'soil-tests') this.paginatedSoilTests = sliced;
+    else if (this.activeView === 'farmers') this.paginatedFarmers = sliced;
+    else if (this.activeView === 'buyers') this.paginatedBuyers = sliced;
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  goToPage(page: number) {
+    this.currentPage = page;
+    this.updatePagination();
   }
 }

@@ -331,6 +331,10 @@
     flex-direction: column;
   }
 
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
   .back-navigation {
     flex-direction: row;
     justify-content: flex-start;

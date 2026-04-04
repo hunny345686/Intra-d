@@ -127,7 +127,7 @@ export class AppControlComponent implements OnInit, OnDestroy {
   launchApp(appId: string): void {
     switch(appId) {
       case 'fpc':
-        this.router.navigate(['/homepage']);
+        this.router.navigate(['/farmer']);
         break;
       case 'apu':
         this.router.navigate(['/apu']);

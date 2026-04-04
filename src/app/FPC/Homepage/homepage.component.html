@@ -4,8 +4,8 @@
     <!-- Pre-Login Content -->
     <div *ngIf="!isLoggedIn">
         <!-- Category Buttons Section -->
-        <div id="category-buttons-section" class="row text-center gx-2 gy-2 mb-4 justify-content-end">
-            <div class="col-6 col-lg-2">
+        <div id="category-buttons-section" class="row text-center gx-2 gy-2 mb-4 justify-content-center">
+            <div class="col-6 col-md-3 col-lg-2">
                 <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" data-bs-toggle="modal"
                     data-bs-target="#comingSoonModal" (click)="setComingSoonFeature('Machinery')">
                     <i class="fas fa-tractor text-primary-green mb-2" style="font-size: 2rem;"></i>
@@ -13,21 +13,14 @@
                     <p class="text-muted small mb-0">Equipment & tools</p>
                 </div>
             </div>
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" (click)="showFarmers()">
                     <i class="fas fa-users text-secondary-blue mb-2" style="font-size: 2rem;"></i>
                     <h6 class="fw-bold text-dark mb-1">Farmers</h6>
                     <p class="text-muted small mb-0">Connect farmers</p>
                 </div>
             </div>
-            <!-- <div class="col-6 col-lg-2">
-                <div class="card-modern p-3 h-100 text-center">
-                    <i class="fas fa-seedling text-success mb-2" style="font-size: 2rem;"></i>
-                    <h6 class="fw-bold text-dark mb-1">Crops</h6>
-                    <p class="text-muted small mb-0">Crop guidance</p>
-                </div>
-            </div> -->
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" data-bs-toggle="modal"
                     data-bs-target="#comingSoonModal" (click)="setComingSoonFeature('Products')">
                     <i class="fas fa-shopping-basket text-warning mb-2" style="font-size: 2rem;"></i>
@@ -35,7 +28,7 @@
                     <p class="text-muted small mb-0">Agri products</p>
                 </div>
             </div>
-            <div class="col-6 col-lg-2">
+            <div class="col-6 col-md-3 col-lg-2">
                 <div class="card-modern p-3 h-100 text-center" style="cursor: pointer;" (click)="showWeather()">
                     <i class="fas fa-cloud-sun text-info mb-2" style="font-size: 2rem;"></i>
                     <h6 class="fw-bold text-dark mb-1">Weather</h6>
@@ -45,9 +38,14 @@
         </div>
 
         <!-- Carousel and Login Section -->
-        <div id="pre-login-content" class="row mt-3">
-            <div class="col-md-8 ">
-                <div id="homepageCarousel" class="carousel slide mb-4 rounded-modern overflow-hidden shadow-modern"
+        <div id="pre-login-content" class="row gx-3">
+            <!-- Login: top on mobile, right on desktop -->
+            <div class="col-12 col-md-5 col-lg-4 order-first order-md-last mb-2 mb-md-0">
+                <app-login (loginSuccess)="onLoginSuccess()"></app-login>
+            </div>
+            <!-- Carousel: bottom on mobile, left on desktop -->
+            <div class="col-12 col-md-7 col-lg-8 order-last order-md-first">
+                <div id="homepageCarousel" class="carousel slide rounded-modern overflow-hidden shadow-modern"
                     data-bs-ride="carousel">
                     <div class="carousel-inner ">
                         <div class="carousel-item active">
@@ -94,9 +92,6 @@
                         <span class="visually-hidden">Next</span>
                     </button>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <app-login (loginSuccess)="onLoginSuccess()"></app-login>
             </div>
         </div>
     </div>

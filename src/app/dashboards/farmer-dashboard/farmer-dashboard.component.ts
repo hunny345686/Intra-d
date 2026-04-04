@@ -20,6 +20,16 @@ interface QuickAction {
   description: string;
 }
 
+interface Worker {
+  name: string;
+  role: string;
+  icon: string;
+  experience: string;
+  pricePerDay: string;
+  skills: string[];
+  available: boolean;
+}
+
 interface ServicePackage {
   id: string;
   name: string;
@@ -52,9 +62,10 @@ export class FarmerDashboardComponent implements OnInit {
   quickActions: QuickAction[] = [];
   recentActivities: any[] = [];
   servicePackages: ServicePackage[] = [];
-  
-  // View management
-  currentView: 'dashboard' | 'service-form' = 'dashboard';
+  workers: Worker[] = [];
+  workerForm = { farmerName: '', mobileNumber: '', village: '', workerType: '', numberOfWorkers: 1, startDate: '', duration: '', additionalNotes: '' };
+  selectedWorker: Worker | null = null;
+  currentView: 'dashboard' | 'service-form' | 'worker-form' = 'dashboard';
   selectedService: ServicePackage | null = null;
   
   // Service form data
@@ -365,6 +376,63 @@ export class FarmerDashboardComponent implements OnInit {
           'Sustainable Practices',
           'Certificate on Completion'
         ]
+      }
+    ];
+
+    this.workers = [
+      {
+        name: 'Field Labourers',
+        role: 'General Farm Work',
+        icon: '👨‍🌾',
+        experience: '2+ years',
+        pricePerDay: '₹400/day',
+        skills: ['Planting', 'Weeding', 'Harvesting', 'Irrigation'],
+        available: true
+      },
+      {
+        name: 'Harvesting Team',
+        role: 'Crop Harvesting',
+        icon: '🌾',
+        experience: '3+ years',
+        pricePerDay: '₹500/day',
+        skills: ['Manual Harvesting', 'Machine Operation', 'Sorting', 'Packing'],
+        available: true
+      },
+      {
+        name: 'Spray Operator',
+        role: 'Pesticide & Fertilizer',
+        icon: '💧',
+        experience: '2+ years',
+        pricePerDay: '₹450/day',
+        skills: ['Pesticide Spraying', 'Fertilizer Application', 'Safety Protocols', 'Equipment Handling'],
+        available: true
+      },
+      {
+        name: 'Tractor Operator',
+        role: 'Machine Operation',
+        icon: '🚜',
+        experience: '5+ years',
+        pricePerDay: '₹700/day',
+        skills: ['Tractor Driving', 'Plowing', 'Rotavating', 'Seed Drilling'],
+        available: false
+      },
+      {
+        name: 'Irrigation Worker',
+        role: 'Water Management',
+        icon: '💦',
+        experience: '2+ years',
+        pricePerDay: '₹380/day',
+        skills: ['Drip Irrigation', 'Canal Management', 'Pump Operation', 'Water Scheduling'],
+        available: true
+      },
+      {
+        name: 'Nursery Worker',
+        role: 'Seedling & Nursery',
+        icon: '🌱',
+        experience: '1+ years',
+        pricePerDay: '₹350/day',
+        skills: ['Seed Sowing', 'Transplanting', 'Nursery Care', 'Grafting'],
+        available: true
       }
     ];
   }

@@ -153,7 +153,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       case APP_CONSTANTS.ROLES.FARMER:
         return '/farmer';
       case APP_CONSTANTS.ROLES.USER:
-        return '/buyer';
+      case 'buyer':
+      case 'seller':
+        return '/apu/buyer';
       case APP_CONSTANTS.ROLES.ADMIN:
         return '/control';
       default:

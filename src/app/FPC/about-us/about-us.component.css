@@ -145,9 +145,15 @@
   /* Extra small devices */
   .team-member-card {
     margin: 0 auto; /* Center cards if they don't fill row */
-    max-width: 250px; /* Constrain width on very small screens */
+    max-width: 100%; /* Full width on very small screens */
   }
   .contact-item p {
     font-size: 1rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+  }
+  .contact-item {
+    padding: 1.25rem;
   }
 }

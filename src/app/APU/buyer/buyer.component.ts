@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, User } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 interface DropdownOption {
   label: string;
@@ -16,7 +17,7 @@ interface DropdownOption {
   templateUrl: './buyer.component.html',
   styleUrls: ['./buyer.component.css']
 })
-export class BuyerComponent implements OnInit {
+export class BuyerComponent implements OnInit, OnDestroy {
   @ViewChild('buyerForm') buyerForm!: NgForm;
 
   // Data structure for all dropdowns
@@ -143,10 +144,16 @@ export class BuyerComponent implements OnInit {
   submittedData: any = null;
   showLastSubmission: boolean = false;
 
+  private userSub!: Subscription;
+
   constructor(
     private authService: AuthService,
     private router: Router
   ) {}
+
+  goToProfile(): void { this.router.navigate(['/profile']); }
+  logout(): void { this.authService.logout('/homepage'); }
+  backToAPU(): void { this.router.navigate(['/apu']); }
 
   onPhoneInput(event: any): void {
     const input = event.target;
@@ -157,7 +164,7 @@ export class BuyerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
+    this.userSub = this.authService.currentUser$.subscribe(user => {
       this.currentUser = user;
     });
     
@@ -189,6 +196,10 @@ export class BuyerComponent implements OnInit {
    */
   toggleLastSubmission(): void {
     this.showLastSubmission = !this.showLastSubmission;
+  }
+
+  ngOnDestroy(): void {
+    this.userSub?.unsubscribe();
   }
 
   onMainCategoryChange(): void {

@@ -24,6 +24,7 @@
 .homepage-content-wrapper {
   padding: 20px;
   animation: fadeInUp 0.8s ease-out;
+  overflow-x: hidden;
 }
 
 /* Category Cards with Agricultural Theme */
@@ -281,43 +282,74 @@
   }
 }
 
-/* Responsive Design - Fixed Carousel Heights */
-@media (max-width: 768px) {
-  .homepage-content-wrapper {
-    padding: 15px;
-  }
-
-  .card-modern {
-    margin-bottom: 15px;
-  }
-
+/* Responsive Design */
+@media (max-width: 991px) {
   #homepageCarousel {
-    height: 300px; /* Smaller height for tablets */
-  }
-
-  .modal-dialog {
-    margin: 10px;
+    height: 280px;
+    border-radius: 16px;
   }
 }
 
-@media (max-width: 576px) {
+/* ── Tablet ≤ 767px ── */
+@media (max-width: 767px) {
+  .homepage-content-wrapper {
+    padding: 10px;
+  }
+
+  /* Remove gutter on mobile so login & carousel align flush */
+  #pre-login-content {
+    --bs-gutter-x: 0;
+    margin-top: 8px;
+  }
+
   #homepageCarousel {
-    height: 250px; /* Even smaller for mobile */
+    height: 200px;
+    border-radius: 10px;
+    margin-top: 8px;
+  }
+
+  .card-modern { margin-bottom: 6px; }
+  #category-buttons-section { margin-bottom: 8px !important; }
+  .modal-dialog { margin: 8px; }
+  .modal-body.p-4   { padding: 1rem !important; }
+  .modal-header.p-4 { padding: 1rem !important; }
+}
+
+/* ── Mobile ≤ 576px ── */
+@media (max-width: 576px) {
+  .homepage-content-wrapper {
+    padding: 8px;
+  }
+
+  #pre-login-content {
+    --bs-gutter-x: 0;
+    margin-top: 6px;
+  }
+
+  #homepageCarousel {
+    height: 170px;
+    border-radius: 8px;
+    margin-top: 6px;
   }
 
   .card-modern {
-    padding: 15px !important;
+    padding: 8px !important;
+    border-radius: 10px;
   }
+  .card-modern i  { font-size: 1.3rem !important; }
+  .card-modern h6 { font-size: 0.78rem; margin-bottom: 0 !important; }
+  .card-modern p  { display: none; }
 
-  .card-modern i {
-    font-size: 1.5rem !important;
-  }
+  #category-buttons-section { margin-bottom: 6px !important; }
+  .modal-dialog   { margin: 4px; }
+  .modal-content  { border-radius: 14px; }
+  .modal-body     { padding: 0.75rem !important; }
+  .modal-header   { padding: 0.75rem !important; }
+  .modal-footer   { padding: 0.6rem !important; }
+}
 
-  .card-modern h6 {
-    font-size: 0.9rem;
-  }
-
-  .card-modern p {
-    font-size: 0.8rem;
-  }
+/* ── Very small ≤ 380px ── */
+@media (max-width: 380px) {
+  .homepage-content-wrapper { padding: 6px; }
+  #homepageCarousel { height: 150px; }
 }

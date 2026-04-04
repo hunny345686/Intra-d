@@ -15,7 +15,7 @@ import { AuthService } from '../../../services/auth.service';
         <p>You don't have permission to access this page.</p>
         <p class="sub-text">Please contact your administrator if you believe this is an error.</p>
         <div class="actions">
-          <button class="btn btn-primary" (click)="goToDashboard()">Go to Dashboard</button>
+          <button class="btn btn-primary" (click)="goToDashboard()">Go to Homepage</button>
           <button class="btn btn-secondary" (click)="logout()">Logout</button>
         </div>
       </div>
@@ -89,14 +89,10 @@ import { AuthService } from '../../../services/auth.service';
   `]
 })
 export class UnauthorizedComponent {
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   goToDashboard() {
-    const dashboardRoute = this.authService.getDashboardRoute();
-    this.router.navigate([dashboardRoute]);
+    this.router.navigate(['/homepage']);
   }
 
   logout() {

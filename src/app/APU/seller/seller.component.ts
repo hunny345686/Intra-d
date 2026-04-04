@@ -1,6 +1,9 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService, User } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-seller',
@@ -9,7 +12,7 @@ import { FormsModule, NgForm } from '@angular/forms';
   templateUrl: './seller.component.html',
   styleUrls: ['./seller.component.css']
 })
-export class SellerComponent implements OnInit {
+export class SellerComponent implements OnInit, OnDestroy {
   @ViewChild('sellerForm') sellerForm!: NgForm;
 
   formData = {
@@ -29,9 +32,27 @@ export class SellerComponent implements OnInit {
   submittedData: any = null;
   showLastSubmission: boolean = false;
 
+  currentUser: User | null = null;
+  private userSub!: Subscription;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  goToProfile(): void { this.router.navigate(['/profile']); }
+  logout(): void { this.authService.logout('/homepage'); }
+  backToAPU(): void { this.router.navigate(['/apu']); }
+
   ngOnInit(): void {
-    // Load last submission from localStorage
+    this.userSub = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
     this.loadLastSubmission();
+  }
+
+  ngOnDestroy(): void {
+    this.userSub?.unsubscribe();
   }
   
   /**

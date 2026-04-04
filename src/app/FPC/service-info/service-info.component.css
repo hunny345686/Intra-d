@@ -218,6 +218,39 @@ h3.text-secondary-blue {
     display: block; /* Make icon take full width */
     margin-bottom: 0.5rem; /* Space below icon */
   }
+  .package-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .nav-pills.vertical {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-pills.vertical::-webkit-scrollbar { display: none; }
+  .nav-pills.vertical .nav-link {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    margin-bottom: 0 !important;
+  }
+  .nav-pills.vertical .nav-link i {
+    display: inline;
+    margin-right: 0.4rem;
+    margin-bottom: 0;
+  }
+  .package-card .card-header {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* Ensure the feature list area has a consistent height across cards */

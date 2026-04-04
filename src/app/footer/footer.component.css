@@ -189,3 +189,28 @@
     padding: 0.6rem 1.2rem;
   }
 }
+
+@media (max-width: 575.98px) {
+  .app-footer {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .university-name {
+    font-size: 1.1rem;
+  }
+  .footer-nav .list-inline-item {
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+  }
+  .footer-link {
+    font-size: 0.8rem;
+  }
+  .footer-list li a {
+    font-size: 0.8rem;
+  }
+  .social-icons .btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+}

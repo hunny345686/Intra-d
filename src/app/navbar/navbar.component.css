@@ -137,7 +137,7 @@
 /* Responsive adjustments */
 @media (min-width: 992px) {
   .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
-    display: block; /* Show dropdown on hover for desktop */
+    display: block;
   }
 }
 
@@ -164,5 +164,25 @@
   .navbar-nav .dropdown-item {
     padding-left: 0; /* Adjust padding for stacked items */
     padding-right: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar {
+    border-radius: 0;
+    padding: 8px 12px;
+  }
+
+  .navbar-brand .fw-bold {
+    font-size: 1rem;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .logo-text .small {
+    font-size: 9px;
   }
 }
