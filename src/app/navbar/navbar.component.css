@@ -157,6 +157,10 @@
   .navbar-nav .nav-link {
     width: 100%; /* Make links full width when stacked */
   }
+  /* Disable hover transform on touch/mobile to prevent layout shift */
+  .navbar-nav .nav-link:hover {
+    transform: none;
+  }
   .navbar-nav .nav-item.dropdown .dropdown-menu {
     width: 100%; /* Make dropdown menu full width */
     text-align: center; /* Center dropdown items */
@@ -164,6 +168,11 @@
   .navbar-nav .dropdown-item {
     padding-left: 0; /* Adjust padding for stacked items */
     padding-right: 0;
+  }
+  /* Disable dropdown item transform on mobile */
+  .navbar-nav .dropdown-menu .dropdown-item:hover,
+  .navbar-nav .dropdown-item:focus {
+    transform: none;
   }
 }
 

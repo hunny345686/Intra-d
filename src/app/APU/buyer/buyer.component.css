@@ -105,6 +105,10 @@
     box-shadow: none;
     border-left: none;
     border-right: none;
+    padding: 1rem;
+  }
+  .display-5 {
+    font-size: 1.3rem;
   }
 }
 

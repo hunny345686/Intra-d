@@ -148,12 +148,15 @@
     max-width: 100%; /* Full width on very small screens */
   }
   .contact-item p {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   .section-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
   .contact-item {
-    padding: 1.25rem;
+    padding: 1rem;
+  }
+  .contact-info-section {
+    flex-direction: column;
   }
 }

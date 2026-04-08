@@ -134,25 +134,44 @@
 }
 
 @media (max-width: 576px) {
-  .col-sm-6 {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-
   .image-wrapper {
-    height: 160px;
+    height: 150px;
   }
 
   .quick-actions {
     top: 8px;
     right: 8px;
     gap: 4px;
+    /* Always visible on touch devices */
+    opacity: 1;
   }
 
   .quick-actions .btn {
     width: 32px;
     height: 32px;
     font-size: 0.8rem;
+  }
+
+  .product-title {
+    font-size: 0.875rem;
+  }
+
+  .card-body {
+    padding: 0.75rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .image-wrapper {
+    height: 130px;
+  }
+
+  .product-title {
+    font-size: 0.8rem;
+  }
+
+  .product-desc {
+    display: none;
   }
 }
 

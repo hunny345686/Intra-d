@@ -111,23 +111,33 @@
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
   .contact-form-container {
-    padding: 1.5rem;
-    margin: 1.5rem auto;
+    padding: 1.25rem;
+    margin: 1rem auto;
   }
   .get-in-touch-title {
-    font-size: 2.2rem; /* Adjust title size for smaller screens */
+    font-size: 2rem;
   }
 }
 
 @media (max-width: 575.98px) {
+  .contact-form-container {
+    padding: 1rem;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+  }
   .get-in-touch-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
   }
   .form-control-custom,
   .form-control-custom-textarea {
-    padding: 0.6rem 0.8rem; /* Further reduce padding for very small screens */
+    padding: 0.6rem 0.8rem;
   }
   .btn-submit-green {
     padding: 0.6rem 2rem;
+    width: 100%;
   }
 }

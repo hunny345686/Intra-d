@@ -253,6 +253,21 @@ h3.text-secondary-blue {
   }
 }
 
+@media (max-width: 380px) {
+  .nav-pills.vertical .nav-link {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  .package-card .card-header {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+  }
+  .package-card .list-group-item {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
 /* Ensure the feature list area has a consistent height across cards */
 .plan-header {
   min-height: 200px; /* Adjust based on your longest list */

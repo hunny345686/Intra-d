@@ -105,11 +105,11 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .image-container {
-    min-height: 300px;
+    min-height: 260px;
   }
 
   .card-body {
-    padding: 1.5rem !important;
+    padding: 1.25rem !important;
   }
 
   .price-section {
@@ -142,7 +142,7 @@
   }
 
   .image-container {
-    min-height: 250px;
+    min-height: 200px;
   }
 
   .breadcrumb {
@@ -156,6 +156,16 @@
   .action-buttons .col-6 {
     flex: none;
     max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .image-container {
+    min-height: 160px;
+  }
+
+  .price-section {
+    padding: 0.75rem;
   }
 }
 

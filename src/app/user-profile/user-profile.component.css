@@ -308,6 +308,7 @@
 @media (max-width: 360px) {
   .profile-name {
     font-size: 22px;
+    word-break: break-word;
   }
 
   .profile-avatar {
@@ -316,7 +317,8 @@
   }
 
   .account-label {
-    font-size: 14px;
+    font-size: 13px;
+    word-break: break-all;
   }
 
   .bottom-actions {
@@ -334,6 +336,10 @@
 
   .action-card {
     padding: 14px;
+  }
+
+  .account-section {
+    margin: 12px;
   }
 }
 
